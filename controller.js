@@ -1,34 +1,28 @@
 const pull = require('pull-stream')
+const express = require('express')
+const router = express.Router()
 
-module.exports = (metadb, opts) => new MetadbController(metadb, opts)
+module.exports = function (metadb) {
+  router.get('/files', (req, res) => pullback(metadb.queryFiles(), res))
 
-class MetadbController {
-  constructor (metadb, opts = {}) {
-    this.metadb = metadb
+  // router.get('/files/:id', controller.files)
 
-    this.queryFiles = this.queryFiles.bind(this)
-    this.myFiles = this.myFiles.bind(this)
-    this.query = this.query.bind(this)
-    this.byExtension = this.byExtension.bind(this)
-    this.filenameSubstring = this.filenameSubstring.bind(this)
-    this.queryPeers = this.queryPeers.bind(this)
-    this.publishAbout = this.publishAbout.bind(this)
-    this.publishRequest = this.publishRequest.bind(this)
-    this.indexFiles = this.indexFiles.bind(this)
-  }
+  router.get('/myfiles', (req, res) => pullback(metadb.myFiles(), res))
 
-  queryFiles (req, res) { return pullback(this.metadb.queryFiles(), res) }
-  query (req, res) { return pullback(this.metadb.query(req.body.query), res) }
-  myFiles (req, res) { return pullback(this.metadb.myFiles(), res) }
-  byExtension (req, res) { return pullback(this.metadb.byExtention(req.body.extention), res) }
-  filenameSubstring (req, res) { return pullback(this.metadb.filenameSubstring(req.body.substring), res) }
-  queryPeers (req, res) { return pullback(this.metadb.queryPeers(), res) }
+  router.get('/peers', (req, res) => pullback(metadb.queryPeers(), res))
 
-  publishAbout (req, res) { this.metadb.publishAbout(req.body.name, Callback(res)) }
-  publishRequest (req, res) { this.metadb.publishRequest(req.body.files, Callback(res)) }
+  router.post('/search', function (req, res) {
+    return pullback(metadb.filenameSubstring(req.body.substring), res)
+  })
 
-  indexFiles (req, res) { this.metadb.indexFiles(req.body.directory, Callback(res)) }
+  return router
 }
+
+// query (req, res) { return pullback(metadb.query(req.body.query), res) }
+// byExtension (req, res) { return pullback(metadb.byExtention(req.body.extention), res) }
+// publishAbout (req, res) { metadb.publishAbout(req.body.name, Callback(res)) }
+// publishRequest (req, res) { metadb.publishRequest(req.body.files, Callback(res)) }
+// indexFiles (req, res) { metadb.indexFiles(req.body.directory, Callback(res)) }
 
 function Callback (res) {
   return function (err, result) {
