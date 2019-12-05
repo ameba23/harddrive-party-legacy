@@ -22,6 +22,7 @@ metadb.ready(() => {
     // router.get('/files/:id', controller.files)
     router.get('/myfiles', controller.myFiles)
     router.get('/peers', controller.queryPeers)
+    router.post('/search', controller.filenameSubstring)
     app.use('/', router)
     // metadb.swarm(key)
   })
