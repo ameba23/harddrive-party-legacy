@@ -4,7 +4,7 @@ const metadb = require('metadb')()
 const Controller = require('./controller')
 
 const app = express()
-const router = express.Router()
+// const router = express.Router()
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -17,13 +17,7 @@ app.use(bodyParser.json())
 
 metadb.ready(() => {
   metadb.buildIndexes(() => {
-    const controller = Controller(metadb)
-    router.get('/files', controller.queryFiles)
-    // router.get('/files/:id', controller.files)
-    router.get('/myfiles', controller.myFiles)
-    router.get('/peers', controller.queryPeers)
-    router.post('/search', controller.filenameSubstring)
-    app.use('/', router)
+    app.use('/', Controller(metadb))
     // metadb.swarm(key)
   })
 })
