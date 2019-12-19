@@ -2,7 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const metadb = require('metadb')()
 const Controller = require('./controller')
-// const cors = require('cors')
 
 const app = express()
 
@@ -16,7 +15,6 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-// app.use(cors({ origin: '*' }))
 
 metadb.ready(() => {
   metadb.buildIndexes(() => {
