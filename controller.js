@@ -7,11 +7,12 @@ module.exports = function (metadb) {
   // router.get('/query', (req, res) => pullback(metadb.query[req.body.query](req.body.queryArgs), res))
   router.get('/files', (req, res) => pullback(metadb.query.files(), res))
 
-  // router.get('/files/:id', controller.files)
+  // router.get('/files/:id', (req, res) => { metadb....(req.body.comment, Callback(res)) })
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
 
   router.get('/files/ownfiles', (req, res) => pullback(metadb.query.ownFiles(), res))
   router.get('/files/bypeer', (req, res) => pullback(metadb.query.filesByPeer(req.body.peer), res))
+  router.post('/files/subdir', (req, res) => { console.log(req.body) ; pullback(metadb.query.subdir(req.body.subdir), res)})
   router.post('/files/search', function (req, res) {
     return pullback(metadb.query.filenameSubstring(req.body.searchterm), res)
   })
