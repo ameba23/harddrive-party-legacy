@@ -12,20 +12,19 @@ module.exports = function (metadb) {
 
   router.get('/files/ownfiles', (req, res) => pullback(metadb.query.ownFiles(), res))
   router.get('/files/bypeer', (req, res) => pullback(metadb.query.filesByPeer(req.body.peer), res))
-  router.post('/files/subdir', (req, res) => { console.log(req.body) ; pullback(metadb.query.subdir(req.body.subdir), res)})
-  router.post('/files/search', function (req, res) {
-    return pullback(metadb.query.filenameSubstring(req.body.searchterm), res)
-  })
+  router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir), res))
+  router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
 
-  router.get('/peers', (req, res) => pullback(metadb.query.peers(), res))
+  router.get('/peers', (req, res) => metadb.query.peers(Callback(res)))
 
   router.get('/settings', (req, res) => { metadb.getSettings(Callback(res)) })
-  router.post('/settings', (req, res) => { metadb.publish.about(req.body.name, Callback(res)) })
+  router.post('/settings', (req, res) => { metadb.setSettings(req.body, Callback(res)) })
 
+  router.get('/request/fromSelf', (req, res) => pullback(metadb.query.requestsFromSelf(), res))
+  router.get('/request/fromOthers', (req, res) => pullback(metadb.query.requestsFromOthers(), res))
   router.post('/request', (req, res) => { metadb.publish.request(req.body.files, Callback(res)) })
 
   router.post('/swarm', (req, res) => { metadb.swarm(req.body.swarm, Callback(res)) })
-  // router.post('/unswarm', (req, res) => { console.log(true, req.body); metadb.unswarm(req.body.swarm, Callback(res)) })
   router.delete('/swarm', (req, res) => { metadb.unswarm(req.body.swarm, Callback(res)) })
 
   return router
