@@ -7,7 +7,7 @@ module.exports = function (metadb) {
   // router.get('/query', (req, res) => pullback(metadb.query[req.body.query](req.body.queryArgs), res))
   router.get('/files', (req, res) => pullback(metadb.query.files(), res))
 
-  // router.get('/files/:id', (req, res) => { metadb....(req.body.comment, Callback(res)) })
+  router.get('/files/:id', (req, res) => { metadb.files.get(req.params.id, Callback(res)) })
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
 
   router.get('/files/ownfiles', (req, res) => pullback(metadb.query.ownFiles(), res))
