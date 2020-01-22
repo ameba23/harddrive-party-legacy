@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "metadb": "git+https://git@github.com/ameba23/metadb-core.git",
+    "metadb-ui": "git+https://git@github.com/ameba23/metadb-ui.git",
     "pull-stream": "^3.6.14"
   },
   "keywords": [
