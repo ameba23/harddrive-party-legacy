@@ -1,6 +1,6 @@
 {
   "name": "metadb",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "peer-to-peer media file indexing tool",
   "main": "index.js",
   "scripts": {
