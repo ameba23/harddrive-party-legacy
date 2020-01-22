@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const metadb = require('metadb')()
+const metadb = require('metadb-core')()
 const Controller = require('./controller')
 
 const app = express()
