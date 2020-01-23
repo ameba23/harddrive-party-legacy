@@ -16,6 +16,7 @@ module.exports = function (metadb) {
   router.get('/files/bypeer', (req, res) => pullback(metadb.query.filesByPeer(req.body.peer), res))
   router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir), res))
   router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
+  router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, Callback(res)) })
 
   router.get('/peers', (req, res) => metadb.query.peers(Callback(res)))
 
