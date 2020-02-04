@@ -13,6 +13,8 @@ It also aims to be extendible - arbitrary data can be published about files, whi
 Based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database)
 Could be used to build a distributed db of media file metadata. 
 
+It has an HTTP API and a simple web interface, meaning it can also be run on an ARM device, NAS, or remote server.
+
 - Built on [kappa-core](https://github.com/kappa-db/kappa-core)
 - Uses [kappa-private](https://ledger-git.dyne.org/CoBox/kappa-private) for encrypted messages between peers
 - Replicate with the database of others to produce a collective database of file metadata - using either `hyperswarm` or `discovery-swarm` for peer discovery.
