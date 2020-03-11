@@ -28,7 +28,13 @@ It has an HTTP API and a simple web interface, meaning it can also be run on an 
   - `pdf-text` which extracts text from PDFs using [pdf2json](https://github.com/modesty/pdf2json)
   - [image-size](https://github.com/image-size/image-size)
 
-This module is an http server exposing [metadb-core](https://github.com/ameba23/metadb-core) api, and the web based front end, [metadb-ui](https://github.com/ameba23/metadb-ui)
+### Installation and usage
+
+- Install globally with npm or yarn, eg: `npm i -g metadb`
+- Run `metadb start`
+- You should see a link to the web interface served on localhost
+
+This module is an http API exposing the functionality from [metadb-core](https://github.com/ameba23/metadb-core), and the web based front end, [metadb-ui](https://github.com/ameba23/metadb-ui)
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
