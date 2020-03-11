@@ -15,6 +15,10 @@ Could be used to build a distributed db of media file metadata.
 
 It has an HTTP API and a simple web interface, meaning it can also be run on an ARM device, NAS, or remote server.
 
+![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot1.png)
+
+![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot2.png)
+
 - Built on [kappa-core](https://github.com/kappa-db/kappa-core)
 - Uses [kappa-private](https://ledger-git.dyne.org/CoBox/kappa-private) for encrypted messages between peers
 - Replicate with the database of others to produce a collective database of file metadata - using either `hyperswarm` or `discovery-swarm` for peer discovery.
