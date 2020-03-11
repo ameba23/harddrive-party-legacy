@@ -28,13 +28,17 @@ It has an HTTP API and a simple web interface, meaning it can also be run on an 
   - `pdf-text` which extracts text from PDFs using [pdf2json](https://github.com/modesty/pdf2json)
   - [image-size](https://github.com/image-size/image-size)
 
+This module is an http API exposing the functionality from [metadb-core](https://github.com/ameba23/metadb-core), and the web based front end, [metadb-ui](https://github.com/ameba23/metadb-ui)
+
 ### Installation and usage
 
 - Install globally with npm or yarn, eg: `npm i -g metadb`
 - Run `metadb start`
 - You should see a link to the web interface served on localhost
-
-This module is an http API exposing the functionality from [metadb-core](https://github.com/ameba23/metadb-core), and the web based front end, [metadb-ui](https://github.com/ameba23/metadb-ui)
+- To get started, you probably want to index some media files, by clicking 'shares' in the web interface, or typing `metadb index <directory>` in another terminal window.
+- To connect to other users and merge databases, you need to connect to a swarm, on the 'connection' page.
+Here you can type a name which will be hashed to give a topic on the DHT to find other peers.  There are currently no known public swarms.
+- You can request files of other peers. Active transfers are not yet displayed in the interface very well, you should be able to see some output in the terminal window running to API.
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
