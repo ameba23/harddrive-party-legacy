@@ -11,6 +11,7 @@ module.exports = function (metadb) {
 
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
 
+  router.get('/files/chronological', (req, res) => pullback(metadb.files.pullStreamByTimestamp(), res))
   router.get('/files/shares', (req, res) => pullback(metadb.query.ownFiles(), res))
   router.get('/files/bypeer/:peerId', (req, res) => pullback(metadb.query.filesByPeer(req.params.peerId), res))
   router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir), res))
