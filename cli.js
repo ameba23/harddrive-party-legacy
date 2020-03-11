@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 const argv = require('minimist')(process.argv.slice(2))
 const axios = require('axios')
+const { inspect } = require('util')
 
 if (argv.help || argv._[0] === 'help' || !argv._.length) {
   console.log(`
     Usage:  ${process.argv[1]} command <options>
     Commands:
       start - start metadb
+      index <directory> - index a directory
+      ls - list files
     Options:
       --port <port number> default: 3000
       --host <host> default: localhost
@@ -19,11 +22,22 @@ if (argv._[0] === 'start') {
   server(argv)
 } else {
   const request = Request(argv)
-  switch (argv._[0]) {
-    case 'files':
-      console.log('hello')
-      break
+  const commands = {
+    index () {
+      const dir = argv._[1]
+      if (!dir) {
+        console.log('Missing directory to index')
+        process.exit(0)
+      }
+      request.post('/files/index', { dir })
+        .then(console.log)
+        .catch(handleError)
+    },
+    ls () {
+      request.get('/files').then(stringify).catch(handleError)
+    }
   }
+  commands[argv._[0]]()
 }
 
 function Request (options) {
@@ -34,4 +48,17 @@ function Request (options) {
     timeout: 1000,
     headers: { 'Content-type': 'application/json' }
   })
+}
+
+function handleError (err) {
+  if (err.code === 'ECONNREFUSED') {
+    console.log('Connection refused. Is metadb running?')
+  } else {
+    console.log(err)
+  }
+}
+
+function stringify (response) {
+  // console.log(JSON.stringify(response, null, 4))
+  console.log(inspect(response))
 }
