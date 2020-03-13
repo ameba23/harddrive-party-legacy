@@ -8,6 +8,7 @@ if (argv.help || argv._[0] === 'help' || !argv._.length) {
     Usage:  ${process.argv[1]} command <options>
     Commands:
       start - start metadb
+      stop - stop metadb
       index <directory> - index a directory
       ls - list files
     Options:
@@ -35,6 +36,11 @@ if (argv._[0] === 'start') {
     },
     ls () {
       request.get('/files').then(stringify).catch(handleError)
+    },
+    stop () {
+      request.post('/stop').then(() => {
+        console.log('metadb has stopped.')
+      }).catch(handleError)
     }
   }
   commands[argv._[0]]()
@@ -56,6 +62,8 @@ function handleError (err) {
   } else {
     console.log(err)
   }
+  // TODO: pass the error code
+  process.exit(1)
 }
 
 function stringify (response) {
