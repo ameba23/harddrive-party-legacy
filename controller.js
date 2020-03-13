@@ -31,6 +31,7 @@ module.exports = function (metadb) {
   router.post('/swarm', (req, res) => { metadb.swarm(req.body.swarm, Callback(res)) })
   router.delete('/swarm', (req, res) => { metadb.unswarm(req.body.swarm, Callback(res)) })
 
+  router.post('/stop', (req, res) => { metadb.stop(Callback(res)) })
   return router
 }
 
