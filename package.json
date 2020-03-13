@@ -8,7 +8,7 @@
     "start": "node server.js"
   },
   "bin": {
-    "metadb-daemon": "server.js"
+    "metadb": "cli.js"
   },
   "author": "ameba23",
   "license": "AGPL-3.0-only",
