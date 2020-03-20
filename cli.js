@@ -11,7 +11,10 @@ if (argv.help || argv._[0] === 'help' || !argv._.length) {
       stop - stop metadb
       index <directory> - index a directory
       ls - list files
-    Options:
+      connect <swarm> [<swarm>] - connect to one or more swarms.
+      disconnect <swarm> - disconnect from one or more swarms.
+                           If no swarms specified, disconnect from all swarms.
+    Global options:
       --port <port number> default: 3000
       --host <host> default: localhost
   `)
@@ -41,6 +44,17 @@ if (argv._[0] === 'start') {
       request.post('/stop').then(() => {
         console.log('metadb has stopped.')
       }).catch(handleError)
+    },
+    connect () {
+      const swarm = argv._.slice(1)
+      request.post('/swarm', { swarm }).then(stringify).catch(handleError)
+    },
+    disconnect () {
+      const swarm = argv._.slice(1)
+      request.delete('/swarm', { swarm }).then(stringify).catch(handleError)
+    },
+    getSettings () {
+      request.get('/settings').then(stringify).catch(handleError)
     }
   }
   commands[argv._[0]]()
@@ -68,5 +82,5 @@ function handleError (err) {
 
 function stringify (response) {
   // console.log(JSON.stringify(response, null, 4))
-  console.log(inspect(response))
+  console.log(inspect(response.data))
 }
