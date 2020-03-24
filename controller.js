@@ -2,6 +2,7 @@ const pull = require('pull-stream')
 const express = require('express')
 const router = express.Router()
 // const { body } = require('express-validator')
+const defaultMaxEntries = 200
 
 module.exports = function (metadb) {
   router.get('/', (req, res) => { res.sendFile(require.resolve('metadb-ui/dist/index.html')) })
@@ -16,7 +17,10 @@ module.exports = function (metadb) {
   router.get('/files/bypeer/:peerId', (req, res) => pullback(metadb.query.filesByPeer(req.params.peerId), res))
   router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir), res))
   router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
+
+  // there should also be 'cancel' and 'pause/resume' indexing
   router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, Callback(res)) })
+
   router.get('/files/:id', (req, res) => { metadb.files.get(req.params.id, Callback(res)) })
 
   router.get('/peers', (req, res) => metadb.query.peers(Callback(res)))
@@ -46,6 +50,10 @@ function Callback (res) {
   }
 }
 
-function pullback (stream, res) {
-  return pull(stream, pull.collect(Callback(res)))
+function pullback (stream, res, maxEntries) {
+  return pull(
+    stream,
+    pull.take(maxEntries || defaultMaxEntries),
+    pull.collect(Callback(res))
+  )
 }
