@@ -44,6 +44,7 @@ module.exports = function (metadb) {
 
 function Callback (res) {
   return function (err, result) {
+    if (err) console.log(err)
     return err
       ? res.status(422).json({ error: err.message })
       : res.status(200).json(result)
