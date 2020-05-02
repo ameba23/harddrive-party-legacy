@@ -17,6 +17,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "metadb-core": "git+https://git@github.com/ameba23/metadb-core.git",
     "metadb-ui": "git+https://git@github.com/ameba23/metadb-ui.git",
     "minimist": "^1.2.5",

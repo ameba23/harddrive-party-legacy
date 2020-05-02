@@ -1,4 +1,5 @@
 const express = require('express')
+const ExpressWs = require('express-ws')
 const bodyParser = require('body-parser')
 const Metadb = require('metadb-core')
 const Controller = require('./controller')
@@ -6,7 +7,7 @@ const Controller = require('./controller')
 exports = module.exports = function (options) {
   const metadb = Metadb(options)
   const app = express()
-
+  const expressWs = ExpressWs(app)
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Credentials', true)

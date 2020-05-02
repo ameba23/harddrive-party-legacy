@@ -2,7 +2,7 @@ const App = require('./')
 
 module.exports = function (options) {
   const host = options.host || 'localhost'
-  const port = options.port || 3000
+  const port = options.port || 2323
 
   const app = App({ storage: options.storage })
   app.listen(port, host)

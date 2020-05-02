@@ -6,6 +6,12 @@ const defaultMaxEntries = 200
 
 module.exports = function (metadb) {
   router.get('/', (req, res) => { res.sendFile(require.resolve('metadb-ui/dist/index.html')) })
+  router.ws('/', (ws, req) => {
+    metadb.events.on('ws', (message) => {
+      console.log('got message', message, 'sending thru ws')
+      ws.send(message)
+    })
+  })
 
   // router.get('/query', (req, res) => pullback(metadb.query[req.body.query](req.body.queryArgs), res))
   router.get('/files', (req, res) => pullback(metadb.query.files(), res))
