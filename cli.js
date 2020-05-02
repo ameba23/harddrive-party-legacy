@@ -17,7 +17,7 @@ if (argv.help || argv._[0] === 'help' || !argv._.length) {
       fileinfo <hash> - display metadata of a file given by hash
 
     Global options:
-      --port <port number> default: 3000
+      --port <port number> default: 2323
       --host <host> default: localhost
   `)
   process.exit(0)
@@ -74,7 +74,7 @@ if (argv._[0] === 'start') {
 
 function Request (options) {
   const host = options.host || 'localhost'
-  const port = options.port || 3000
+  const port = options.port || 2323
   return axios.create({
     baseURL: `http://${host}:${port}/`,
     timeout: 1000,
