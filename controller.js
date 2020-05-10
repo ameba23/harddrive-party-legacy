@@ -9,7 +9,11 @@ module.exports = function (metadb) {
   router.ws('/', (ws, req) => {
     metadb.events.on('ws', (message) => {
       console.log('got message', message, 'sending thru ws')
-      ws.send(message)
+      try {
+        ws.send(message)
+      } catch (err) {
+        console.log('error when sending message on ws.', err)
+      }
     })
   })
 
