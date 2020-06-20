@@ -5,7 +5,9 @@ const router = express.Router()
 const defaultMaxEntries = 200
 
 module.exports = function (metadb) {
+  // Send front-end on get '/'
   router.get('/', (req, res) => { res.sendFile(require.resolve('metadb-ui/dist/index.html')) })
+  // Handle websockes
   router.ws('/', (ws, req) => {
     metadb.events.on('ws', (message) => {
       console.log('got message', message, 'sending thru ws')
@@ -17,7 +19,6 @@ module.exports = function (metadb) {
     })
   })
 
-  // router.get('/query', (req, res) => pullback(metadb.query[req.body.query](req.body.queryArgs), res))
   router.get('/files', (req, res) => pullback(metadb.query.files(), res))
 
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
@@ -38,8 +39,7 @@ module.exports = function (metadb) {
   router.get('/settings', (req, res) => { metadb.getSettings(Callback(res)) })
   router.post('/settings', (req, res) => { metadb.setSettings(req.body, Callback(res)) })
 
-  router.get('/request/fromSelf', (req, res) => pullback(metadb.query.requestsFromSelf(), res))
-  router.get('/request/fromOthers', (req, res) => pullback(metadb.query.requestsFromOthers(), res))
+  router.get('/request', (req, res) => pullback(metadb.query.requesting(), res))
   router.post('/request', (req, res) => { metadb.publish.request(req.body.files, Callback(res)) })
 
   router.post('/swarm', (req, res) => { metadb.swarm(req.body.swarm, Callback(res)) })
@@ -49,6 +49,7 @@ module.exports = function (metadb) {
   return router
 }
 
+// router.get('/query', (req, res) => pullback(metadb.query[req.body.query](req.body.queryArgs), res))
 // byExtension (req, res) { return pullback(metadb.byExtention(req.body.extention), res) }
 // indexFiles (req, res) { metadb.indexFiles(req.body.directory, Callback(res)) }
 

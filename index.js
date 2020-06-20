@@ -7,7 +7,7 @@ const Controller = require('./controller')
 exports = module.exports = function (options) {
   const metadb = Metadb(options)
   const app = express()
-  const expressWs = ExpressWs(app)
+  ExpressWs(app)
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Credentials', true)
