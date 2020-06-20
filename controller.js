@@ -41,7 +41,7 @@ module.exports = function (metadb) {
 
   router.get('/request', (req, res) => pullback(metadb.query.requesting(), res))
   router.post('/request', (req, res) => { metadb.request(req.body.files, Callback(res)) })
-  router.delete('/request', (req, res) => {console.log(req); metadb.unrequest(req.body.files, Callback(res)) })
+  router.delete('/request', (req, res) => { metadb.unrequest(req.body.files, Callback(res)) })
 
   router.post('/swarm', (req, res) => { metadb.swarm(req.body.swarm, Callback(res)) })
   router.delete('/swarm', (req, res) => { metadb.unswarm(req.body.swarm, Callback(res)) })
