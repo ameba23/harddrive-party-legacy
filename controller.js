@@ -43,8 +43,8 @@ module.exports = function (metadb) {
   router.post('/request', (req, res) => { metadb.request(req.body.files, Callback(res)) })
   router.delete('/request', (req, res) => { metadb.unrequest(req.body.files, Callback(res)) })
 
-  router.post('/swarm', (req, res) => { metadb.swarm.connect(req.body.swarm, Callback(res)) })
-  router.delete('/swarm', (req, res) => { metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
+  router.post('/swarm', (req, res) => { console.log(req.body); metadb.swarm.connect(req.body.swarm, Callback(res)) })
+  router.delete('/swarm', (req, res) => { console.log(req.body); metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
 
   router.post('/stop', (req, res) => { metadb.stop(Callback(res)) })
   return router
