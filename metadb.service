@@ -1,0 +1,22 @@
+# Example systemd service file - customise and put in /etc/systemd
+[Unit]
+Description=Metadb peer to peer
+#Requires=After=mysql.service
+
+[Service]
+ExecStart=/usr/local/bin/node /opt/nodeserver/server.js
+# Required on some systems
+#WorkingDirectory=/opt/nodeserver
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=metadb
+#User=<alternate user>
+#Group=<alternate group>
+#Environment=NODE_ENV=production HOST=localhost PORT=2323 # env vars go here
+
+[Install]
+WantedBy=multi-user.target
