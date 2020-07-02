@@ -40,7 +40,7 @@ You might also wonder why use a custom handshake and not NOISE. We want to estab
 
 - Database built on [kappa-core](https://github.com/kappa-db/kappa-core)
 - Replicate with the database of others to produce a collective database of file metadata - using the `hyperswarm` DHT for peer discovery.
-- Pluggable metadata extractors. Included are:
+- Pluggable metadata extractors. See [metadata-extract](https://github.com/ameba23/metadata-extract):
   - [Exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/) - built for images but extracts data from a wide variety of other types of files.  Requires the script to be installed externally.  `exif-keys.json` specifies a list of attributes from exiftool that we would like to index.
   - [music-metadata](https://github.com/borewit/music-metadata)
   - `pdf-text` which extracts text from PDFs using [pdf2json](https://github.com/modesty/pdf2json)
