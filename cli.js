@@ -2,6 +2,7 @@
 const argv = require('minimist')(process.argv.slice(2))
 const chalk = require('chalk')
 const axios = require('axios')
+const { sep } = require('path')
 const { inspect } = require('util')
 
 const DEFAULTHOST = process.env.METADB_HOST || 'localhost'
@@ -20,10 +21,11 @@ function displayHelp () {
       peers - list peers
       settings - list settings
       connect <swarm> [<swarm>] - connect to one or more swarms.
+                            If no swarm specified, connect to a new private swarm.
       disconnect <swarm> - disconnect from one or more swarms.
                            If no swarms specified, disconnect from all swarms.
       fileinfo <hash> - display metadata of a file given by hash
-      request <hash> - request a file by hash
+      request <hash(es)> - request one or more files by hash
 
     Global options:
       --port <port number> default: 2323
@@ -42,7 +44,7 @@ if (argv.help || argv._[0] === 'help') {
 }
 
 if (argv._[0] === 'start') {
-  const server = require('./server')
+  const server = require('.')
   server(argv)
 } else {
   const request = Request(argv)
@@ -62,6 +64,11 @@ if (argv._[0] === 'start') {
     search () {
       const searchterm = argv._.slice(1).join(' ')
       request.post('/files/search', { searchterm }).then(displayFiles).catch(handleError)
+    },
+    subdir () {
+      const subdir = argv._[1]
+      const opts = { oneLevel: argv.oneLevel }
+      request.post('/files/subdir', { subdir, opts }).then(displayFiles).catch(handleError)
     },
     wishlist () {
       request.get('/request').then(stringify).catch(handleError)
@@ -95,7 +102,7 @@ if (argv._[0] === 'start') {
     fileinfo () {
       const hash = argv._[1]
       if (!hash) {
-        console.log('Missing hash argument')
+        console.log(chalk.red('Missing hash argument'))
         process.exit(1)
       }
       request.get(`/files/${hash}`).then(stringify).catch(handleError)
@@ -115,10 +122,10 @@ function Request (options = {}) {
 }
 
 function handleError (err) {
-  console.log(err.code === 'ECONNREFUSED'
-    ? chalk.red('Connection refused. Is metadb running?')
-    : err
-  )
+  console.log(chalk.red(err.code === 'ECONNREFUSED'
+    ? 'Connection refused. Is metadb running?'
+    : err.response.data.error
+  ))
   // TODO: pass the error code
   process.exit(1)
 }
@@ -128,9 +135,20 @@ function stringify (response) {
   console.log(inspect(response.data))
 }
 
+function displayPath (filePath) {
+  if (Array.isArray(filePath)) return filePath.map(displayPath)
+  const arr = filePath.split(sep)
+
+  return arr.map((comp, i) => {
+    if (i + 1 === arr.length) return chalk.green(comp)
+    return `${chalk.blue(comp)}${chalk.grey(sep)}`
+  }).join('')
+}
+
 function displayFiles (res) {
   res.data.forEach((f) => {
-    console.log(chalk.green(f.filename), chalk.red(readableBytes(f.size)))
+    if (f.dir) return console.log(chalk.blue(f.dir))
+    console.log(displayPath(f.filename), chalk.red(readableBytes(f.size)))
   })
 }
 
@@ -139,6 +157,7 @@ function displaySettings ({ data }) {
   const connectedSwarms = Object.keys(data.swarms).filter(s => data.swarms[s])
   console.log(connectedSwarms.length ? `Connected swarms: ${chalk.yellow(connectedSwarms)}` : 'Not connected.')
   console.log(`Download path: ${chalk.yellow(data.downloadPath)}`)
+  console.log(data)
 }
 
 function readableBytes (bytes) {

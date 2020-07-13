@@ -7,6 +7,7 @@ const defaultMaxEntries = 200
 module.exports = function (metadb) {
   // Send front-end on get '/'
   router.get('/', (req, res) => { res.sendFile(require.resolve('metadb-ui/dist/index.html')) })
+
   // Handle websockes
   router.ws('/', (ws, req) => {
     metadb.events.on('ws', (message) => {
@@ -26,11 +27,12 @@ module.exports = function (metadb) {
   router.get('/files/chronological', (req, res) => pullback(metadb.files.pullStreamByTimestamp(), res))
   router.get('/files/shares', (req, res) => pullback(metadb.query.ownFiles(), res))
   router.get('/files/bypeer/:peerId', (req, res) => pullback(metadb.query.filesByPeer(req.params.peerId), res))
-  router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir), res))
+  router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir, req.body.opts), res))
   router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
 
   // there should also be 'cancel' and 'pause/resume' indexing
   router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, Callback(res)) })
+  router.delete('/files/index', (req, res) => { metadb.cancelIndexing(req.body.dir) })
 
   router.get('/files/:id', (req, res) => { metadb.files.get(req.params.id, Callback(res)) })
 
