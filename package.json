@@ -18,8 +18,8 @@
     "chalk": "^4.1.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
-    "metadb-core": "git+https://git@github.com/ameba23/metadb-core.git",
-    "metadb-ui": "git+https://git@github.com/ameba23/metadb-ui.git",
+    "metadb-core": "^1.2.0",
+    "metadb-ui": "^1.1.0",
     "minimist": "^1.2.5",
     "pull-stream": "^3.6.14"
   },
