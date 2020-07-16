@@ -1,23 +1,26 @@
 const pull = require('pull-stream')
 const express = require('express')
 const router = express.Router()
-// const { body } = require('express-validator')
-const defaultMaxEntries = 200
+const buildUi = require('metadb-ui')
+const path = require('path')
+const fs = require('fs')
+const defaultMaxEntries = 200 // Number of files to return
 
-module.exports = function (metadb) {
+module.exports = function (metadb, options) {
   // Send front-end on get '/'
-  router.get('/', (req, res) => { res.sendFile(require.resolve('metadb-ui/dist/index.html')) })
+  const uiFilePath = path.join(metadb.storage, 'ui.html')
+  let uiReady = false
+  let buildError
 
-  // Handle websockes
-  router.ws('/', (ws, req) => {
-    metadb.events.on('ws', (message) => {
-      console.log('got message', message, 'sending thru ws')
-      try {
-        ws.send(message)
-      } catch (err) {
-        console.log('error when sending message on ws.', err)
-      }
-    })
+  build(uiFilePath, options, (err) => {
+    uiReady = true
+    buildError = err
+  })
+
+  router.get('/', (req, res) => {
+    if (buildError) return res.send(`Error when building user interface: ${buildError}`)
+    if (!uiReady) return res.send('User interface not yet built, try reloading')
+    res.sendFile(uiFilePath)
   })
 
   router.get('/files', (req, res) => pullback(metadb.query.files(), res))
@@ -49,6 +52,19 @@ module.exports = function (metadb) {
   router.delete('/swarm', (req, res) => { console.log(req.body); metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
 
   router.post('/stop', (req, res) => { metadb.stop(Callback(res)) })
+
+  // Handle websockes
+  router.ws('/', (ws, req) => {
+    metadb.events.on('ws', (message) => {
+      console.log('got message', message, 'sending thru ws')
+      try {
+        ws.send(message)
+      } catch (err) {
+        console.log('error when sending message on ws.', err)
+      }
+    })
+  })
+
   return router
 }
 
@@ -71,4 +87,12 @@ function pullback (stream, res, maxEntries) {
     pull.take(maxEntries || defaultMaxEntries),
     pull.collect(Callback(res))
   )
+}
+
+function build (uiFilePath, options, callback) {
+  const uiFile = fs.createWriteStream(uiFilePath)
+  uiFile.on('error', (err) => { return callback(err) })
+  const ui = buildUi(options)
+  ui.on('end', () => { callback() })
+  ui.pipe(uiFile)
 }
