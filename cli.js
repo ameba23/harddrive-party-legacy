@@ -109,6 +109,13 @@ if (argv._[0] === 'start') {
       request.get(`/files/${hash}`).then(stringify).catch(handleError)
     }
   }
+
+  if (typeof commands[argv._[0]] !== 'function') {
+    console.log(chalk.red(`${argv._[0]} is not a command!`))
+    displayHelp()
+    process.exit(1)
+  }
+
   commands[argv._[0]]()
 }
 
