@@ -2,7 +2,7 @@
 const argv = require('minimist')(process.argv.slice(2))
 const chalk = require('chalk')
 const axios = require('axios')
-const { sep } = require('path')
+const { sep, basename } = require('path')
 const { inspect } = require('util')
 
 const DEFAULTHOST = process.env.METADB_HOST || 'localhost'
@@ -11,7 +11,7 @@ const REQUEST_TIMEOUT = 1000
 
 function displayHelp () {
   console.log(`
-    Usage:  ${chalk.yellow(process.argv[1])} command <options>
+    Usage:  ${chalk.yellow(basename(process.argv[1]))} command <options>
     Commands:
       start - start metadb
       stop - stop metadb
@@ -36,6 +36,7 @@ function displayHelp () {
 if (!argv._.length) {
   displayHelp()
   argv._ = ['settings']
+  process.exit(0)
 }
 
 if (argv.help || argv._[0] === 'help') {
@@ -108,6 +109,13 @@ if (argv._[0] === 'start') {
       request.get(`/files/${hash}`).then(stringify).catch(handleError)
     }
   }
+
+  if (typeof commands[argv._[0]] !== 'function') {
+    console.log(chalk.red(`${argv._[0]} is not a command!`))
+    displayHelp()
+    process.exit(1)
+  }
+
   commands[argv._[0]]()
 }
 

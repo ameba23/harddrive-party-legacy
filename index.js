@@ -21,15 +21,13 @@ exports = module.exports = function (options) {
   app.use(bodyParser.json())
 
   metadb.ready(() => {
-    metadb.buildIndexes(() => {
-      app.use('/', Controller(metadb))
-
-      options.host = options.host || process.env.METADB_HOST || metadb.config.host || 'localhost'
-      options.port = options.port || process.env.METADB_PORT || metadb.config.port || 2323
-      const { port, host } = options
-      console.log(`Web interface available at http://${host}:${port}`)
-      app.listen(port, host)
-    })
+    options.host = options.host || process.env.METADB_HOST || metadb.config.host || 'localhost'
+    options.port = options.port || process.env.METADB_PORT || metadb.config.port || 2323
+    app.use('/', Controller(metadb, options))
+    const { port, host } = options
+    console.log(`Web interface available at http://${host}:${port}`)
+    app.listen(port, host)
+    metadb.buildIndexes(() => {})
   })
 
   return app
