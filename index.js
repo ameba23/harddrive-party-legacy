@@ -6,7 +6,9 @@ const Controller = require('./controller')
 
 exports = module.exports = function (options) {
   console.log(require('./metadb-banner'))
+
   const metadb = Metadb(options)
+
   const app = express()
   ExpressWs(app)
   app.use(function (req, res, next) {
@@ -19,8 +21,11 @@ exports = module.exports = function (options) {
 
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
-
-  metadb.ready(() => {
+  metadb.ready((err) => {
+    if (err) {
+      console.log(err)
+      process.exit(1)
+    }
     options.host = options.host || process.env.METADB_HOST || metadb.config.host || 'localhost'
     options.port = options.port || process.env.METADB_PORT || metadb.config.port || 2323
     app.use('/', Controller(metadb, options))
@@ -29,6 +34,5 @@ exports = module.exports = function (options) {
     app.listen(port, host)
     metadb.buildIndexes(() => {})
   })
-
   return app
 }

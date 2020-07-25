@@ -62,6 +62,14 @@ if (argv._[0] === 'start') {
         })
         .catch(handleError)
     },
+    stopIndex () {
+      const dir = argv._[1]
+      request.delete('/files/index', { dir })
+        .then((res) => {
+          console.log('Stopped indexing.')
+        })
+        .catch(handleError)
+    },
     search () {
       const searchterm = argv._.slice(1).join(' ')
       request.post('/files/search', { searchterm }).then(displayFiles).catch(handleError)
@@ -78,12 +86,17 @@ if (argv._[0] === 'start') {
       request.get('/peers').then(stringify).catch(handleError)
     },
     ls () {
-      request.get('/files').then(displayFiles).catch(handleError)
+      const LIMIT = argv.limit
+      request.get('/files', { params: { LIMIT } }).then(displayFiles).catch(handleError)
     },
     stop () {
       request.post('/stop').then(() => {
         console.log('metadb has stopped.')
       }).catch(handleError)
+    },
+    show () {
+      const sha256 = argv._.slice(1)
+      request.get(`/files/${sha256}`).then(stringify).catch(handleError)
     },
     request () {
       const files = argv._.slice(1)
@@ -130,17 +143,18 @@ function Request (options = {}) {
 }
 
 function handleError (err) {
-  console.log(chalk.red(err.code === 'ECONNREFUSED'
-    ? 'Connection refused. Is metadb running?'
-    : err.response.data.error
-  ))
+  console.log(err)
+  // console.log(chalk.red(err.code === 'ECONNREFUSED'
+  //   ? 'Connection refused. Is metadb running?'
+  //   : err.response.data.error
+  // ))
   // TODO: pass the error code
   process.exit(1)
 }
 
 function stringify (response) {
   // console.log(JSON.stringify(response, null, 4))
-  console.log(inspect(response.data))
+  console.log(inspect(response.data, { colors: true, depth: Infinity }))
 }
 
 function displayPath (filePath) {
@@ -156,7 +170,7 @@ function displayPath (filePath) {
 function displayFiles (res) {
   res.data.forEach((f) => {
     if (f.dir) return console.log(chalk.blue(f.dir))
-    console.log(displayPath(f.filename), chalk.red(readableBytes(f.size)))
+    console.log(displayPath(f.filename), chalk.red(readableBytes(f.size)), chalk.grey(f.sha256))
   })
 }
 
@@ -165,6 +179,7 @@ function displaySettings ({ data }) {
   const connectedSwarms = Object.keys(data.swarms).filter(s => data.swarms[s])
   console.log(connectedSwarms.length ? `Connected swarms: ${chalk.yellow(connectedSwarms)}` : 'Not connected.')
   console.log(`Download path: ${chalk.yellow(data.downloadPath)}`)
+  if (data.indexing) console.log(`Indexing - ${chalk.yellow(data.indexing)} - ${data.indexProgrss}% done...`)
   console.log(data)
 }
 

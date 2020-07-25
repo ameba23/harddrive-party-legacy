@@ -23,7 +23,7 @@ module.exports = function (metadb, options) {
     res.sendFile(uiFilePath)
   })
 
-  router.get('/files', (req, res) => pullback(metadb.query.files(), res))
+  router.get('/files', (req, res) => pullback(metadb.query.files(), res, req.query.LIMIT))
 
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
 
@@ -48,8 +48,8 @@ module.exports = function (metadb, options) {
   router.post('/request', (req, res) => { metadb.request(req.body.files, Callback(res)) })
   router.delete('/request', (req, res) => { metadb.unrequest(req.body.files, Callback(res)) })
 
-  router.post('/swarm', (req, res) => { console.log(req.body); metadb.swarm.connect(req.body.swarm, Callback(res)) })
-  router.delete('/swarm', (req, res) => { console.log(req.body); metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
+  router.post('/swarm', (req, res) => { metadb.swarm.connect(req.body.swarm, Callback(res)) })
+  router.delete('/swarm', (req, res) => { metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
 
   router.post('/stop', (req, res) => { metadb.stop(Callback(res)) })
 
@@ -82,6 +82,7 @@ function Callback (res) {
 }
 
 function pullback (stream, res, maxEntries) {
+  if (typeof maxEntries === 'string') maxEntries = parseInt(maxEntries)
   return pull(
     stream,
     pull.take(maxEntries || defaultMaxEntries),
