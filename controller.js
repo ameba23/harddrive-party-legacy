@@ -23,7 +23,7 @@ module.exports = function (metadb, options) {
     res.sendFile(uiFilePath)
   })
 
-  router.get('/files', (req, res) => pullback(metadb.query.files(), res, req.query.LIMIT))
+  router.get('/files', (req, res) => pullback(metadb.query.files(req.query), res, req.query.LIMIT))
 
   // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
 

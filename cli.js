@@ -17,7 +17,8 @@ function displayHelp () {
       stop - stop metadb
       index <directory> - index a directory
       ls - list files
-      search - <search terms> - filename substring search
+      search <search terms> - filename substring search
+      show <hash> - show details of a given file
       peers - list peers
       settings - list settings
       connect <swarm> [<swarm>] - connect to one or more swarms.
@@ -54,7 +55,7 @@ if (argv._[0] === 'start') {
       const dir = argv._[1]
       if (!dir) {
         console.log('Missing directory to index')
-        process.exit(0)
+        process.exit(1)
       }
       request.post('/files/index', { dir })
         .then((res) => {
@@ -81,6 +82,9 @@ if (argv._[0] === 'start') {
     },
     wishlist () {
       request.get('/request').then(stringify).catch(handleError)
+    },
+    availableFiles () {
+      request.get('/files', { params: { fromConnectedPeers: true } }).then(displayFiles).catch(handleError)
     },
     peers () {
       request.get('/peers').then(stringify).catch(handleError)
@@ -158,12 +162,16 @@ function stringify (response) {
 }
 
 function displayPath (filePath) {
+  const reverse = true
   if (Array.isArray(filePath)) return filePath.map(displayPath)
   const arr = filePath.split(sep)
+  if (reverse) arr.reverse()
+  const filenamePosition = reverse ? 0 : arr.length - 1
 
   return arr.map((comp, i) => {
-    if (i + 1 === arr.length) return chalk.green(comp)
-    return `${chalk.blue(comp)}${chalk.grey(sep)}`
+    const outputColor = (i === filenamePosition) ? 'green' : 'blue'
+    const trailing = (i === arr.length - 1) ? '' : chalk.grey(sep)
+    return `${chalk[outputColor](comp)}${trailing}`
   }).join('')
 }
 
