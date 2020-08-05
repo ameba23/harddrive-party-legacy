@@ -7,13 +7,16 @@ const { inspect } = require('util')
 
 const DEFAULTHOST = process.env.METADB_HOST || 'localhost'
 const DEFAULTPORT = process.env.METADB_PORT || 2323
-const REQUEST_TIMEOUT = 1000
+const REQUEST_TIMEOUT = 5000
 
 function displayHelp () {
   console.log(`
     Usage:  ${chalk.yellow(basename(process.argv[1]))} command <options>
     Commands:
       start - start metadb
+        options:
+          --httpsKey <path to key file> Default: dont use https
+          --httpsCert <path to cert file>
       stop - stop metadb
       index <directory> - index a directory
       ls - list files
@@ -25,19 +28,18 @@ function displayHelp () {
                             If no swarm specified, connect to a new private swarm.
       disconnect <swarm> - disconnect from one or more swarms.
                            If no swarms specified, disconnect from all swarms.
-      fileinfo <hash> - display metadata of a file given by hash
       request <hash(es)> - request one or more files by hash
 
     Global options:
       --port <port number> default: 2323
       --host <host> default: localhost
+      --https - use https
   `)
 }
 
 if (!argv._.length) {
   displayHelp()
   argv._ = ['settings']
-  process.exit(0)
 }
 
 if (argv.help || argv._[0] === 'help') {
@@ -99,7 +101,11 @@ if (argv._[0] === 'start') {
       }).catch(handleError)
     },
     show () {
-      const sha256 = argv._.slice(1)
+      const sha256 = argv._[1]
+      if (!sha256) {
+        console.log(chalk.red('Missing hash argument'))
+        process.exit(1)
+      }
       request.get(`/files/${sha256}`).then(stringify).catch(handleError)
     },
     request () {
@@ -116,14 +122,6 @@ if (argv._[0] === 'start') {
     },
     settings () {
       request.get('/settings').then(displaySettings).catch(handleError)
-    },
-    fileinfo () {
-      const hash = argv._[1]
-      if (!hash) {
-        console.log(chalk.red('Missing hash argument'))
-        process.exit(1)
-      }
-      request.get(`/files/${hash}`).then(stringify).catch(handleError)
     }
   }
 
@@ -139,8 +137,9 @@ if (argv._[0] === 'start') {
 function Request (options = {}) {
   const host = options.host || DEFAULTHOST
   const port = options.port || DEFAULTPORT
+  const useHttps = options.https
   return axios.create({
-    baseURL: `http://${host}:${port}/`,
+    baseURL: `http${useHttps ? 's' : ''}://${host}:${port}/`,
     timeout: REQUEST_TIMEOUT,
     headers: { 'Content-type': 'application/json' }
   })
