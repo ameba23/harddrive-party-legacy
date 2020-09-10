@@ -161,8 +161,14 @@ function stringify (response) {
 }
 
 function displayPath (filePath) {
+  // Reverse path, so more relevant parts appear first
   const reverse = true
-  if (Array.isArray(filePath)) return filePath.map(displayPath)
+  if (Array.isArray(filePath)) {
+    if (filePath.length > 1) {
+      return filePath.map(displayPath).join(', ')
+    }
+    filePath = filePath[0]
+  }
   const arr = filePath.split(sep)
   if (reverse) arr.reverse()
   const filenamePosition = reverse ? 0 : arr.length - 1
@@ -177,6 +183,7 @@ function displayPath (filePath) {
 function displayFiles (res) {
   res.data.forEach((f) => {
     if (f.dir) return console.log(chalk.blue(f.dir))
+
     console.log(displayPath(f.filename), chalk.red(readableBytes(f.size)), chalk.grey(f.sha256))
   })
 }
