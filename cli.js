@@ -79,7 +79,7 @@ if (argv._[0] === 'start') {
     },
     subdir () {
       const subdir = argv._[1]
-      const opts = { oneLevel: argv.oneLevel }
+      const opts = { oneLevel: argv.oneLevel, connectedPeersOnly: argv.connectedPeersOnly }
       request.post('/files/subdir', { subdir, opts }).then(displayFiles).catch(handleError)
     },
     wishlist () {

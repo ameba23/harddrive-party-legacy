@@ -1,22 +1,33 @@
-# Example systemd service file - customise and put in /etc/systemd
+# Example systemd service file - customise and put in /lib/systemd/system
+# then run systemctl daemon-reload
 [Unit]
-Description=Metadb peer to peer
-#Requires=After=mysql.service
+Description=Metadb peer to peer filesharing
+Documentation=https://github.com/ameba23/metadb
+# Start this service after network is up
+After=network.target
 
 [Service]
 ExecStart=/usr/local/bin/node /opt/nodeserver/server.js
 # Required on some systems
 #WorkingDirectory=/opt/nodeserver
-Restart=always
+
+#Restart=always
+Restart=on-failure
 # Restart service after 10 seconds if node service crashes
 RestartSec=10
+
+#Type=simple
+
 # Output to syslog
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=metadb
+
 #User=<alternate user>
 #Group=<alternate group>
-#Environment=NODE_ENV=production HOST=localhost PORT=2323 # env vars go here
+
+#Environment=NODE_ENV=production HOST=localhost PORT=2323
+#Environment=DEBUG=metadb*
 
 [Install]
 WantedBy=multi-user.target
