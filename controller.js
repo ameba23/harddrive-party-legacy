@@ -64,6 +64,7 @@ module.exports = function (metadb, options) {
   router.delete('/swarm', (req, res) => { metadb.swarm.disconnect(req.body.swarm, Callback(res)) })
 
   router.get('/downloads', (req, res) => { pullback(metadb.getDownloads(), res) })
+  router.get('/uploads', (req, res) => { pullback(metadb.getUploads(), res) })
   router.get('/downloads/:hash', (req, res) => {
     // TODO validate hash correctly formed
     metadb.getDownloadedFileByHash(req.params.hash, (err, fileObject) => {
