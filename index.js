@@ -1,12 +1,17 @@
 const express = require('express')
+const basicAuth = require('express-basic-auth')
 const ExpressWs = require('express-ws')
 const bodyParser = require('body-parser')
 const Metadb = require('metadb-core')
 const Controller = require('./controller')
+const https = require('https')
+const fs = require('fs')
 
 exports = module.exports = function (options) {
   console.log(require('./metadb-banner'))
+
   const metadb = Metadb(options)
+
   const app = express()
   ExpressWs(app)
   app.use(function (req, res, next) {
@@ -19,16 +24,42 @@ exports = module.exports = function (options) {
 
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
+  metadb.ready((err) => {
+    if (err) {
+      console.log(err)
+      process.exit(1)
+    }
 
-  metadb.ready(() => {
     options.host = options.host || process.env.METADB_HOST || metadb.config.host || 'localhost'
     options.port = options.port || process.env.METADB_PORT || metadb.config.port || 2323
+
+    options.httpsKey = options.httpsKey || process.env.METADB_HTTPS_KEY || metadb.config.httpsKey
+    options.httpsCert = options.httpsCert || process.env.METADB_HTTPS_CERT || metadb.config.httpsCert
+    options.https = !!(options.httpsKey && options.httpsCert)
+
+    options.basicAuthUser = options.basicAuthUser || metadb.config.basicAuthUser
+    options.basicAuthPassword = options.basicAuthPassword || metadb.config.basicAuthPassword
+    options.basicAuth = !!(options.basicAuthUser && options.basicAuthPassword)
+    if (options.basicAuth) {
+      app.use(basicAuth({
+        users: { [options.basicAuthUser]: options.basicAuthPassword },
+        challenge: true,
+        realm: 'metadb'
+      }))
+    }
+
     app.use('/', Controller(metadb, options))
     const { port, host } = options
-    console.log(`Web interface available at http://${host}:${port}`)
-    app.listen(port, host)
+    if (options.https) {
+      https.createServer({
+        key: fs.readFileSync(options.httpsKey),
+        cert: fs.readFileSync(options.httpsCert)
+      }, app).listen(port, host)
+    } else {
+      app.listen(port, host)
+    }
+    console.log(`Web interface available at http${options.https ? 's' : ''}://${host}:${port}`)
     metadb.buildIndexes(() => {})
   })
-
   return app
 }
