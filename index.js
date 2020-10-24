@@ -1,4 +1,5 @@
 const express = require('express')
+const basicAuth = require('express-basic-auth')
 const ExpressWs = require('express-ws')
 const bodyParser = require('body-parser')
 const Metadb = require('metadb-core')
@@ -28,11 +29,25 @@ exports = module.exports = function (options) {
       console.log(err)
       process.exit(1)
     }
+
     options.host = options.host || process.env.METADB_HOST || metadb.config.host || 'localhost'
     options.port = options.port || process.env.METADB_PORT || metadb.config.port || 2323
+
     options.httpsKey = options.httpsKey || process.env.METADB_HTTPS_KEY || metadb.config.httpsKey
     options.httpsCert = options.httpsCert || process.env.METADB_HTTPS_CERT || metadb.config.httpsCert
-    options.https = options.httpsKey && options.httpsCert
+    options.https = !!(options.httpsKey && options.httpsCert)
+
+    options.basicAuthUser = options.basicAuthUser || metadb.config.basicAuthUser
+    options.basicAuthPassword = options.basicAuthPassword || metadb.config.basicAuthPassword
+    options.basicAuth = !!(options.basicAuthUser && options.basicAuthPassword)
+    if (options.basicAuth) {
+      app.use(basicAuth({
+        users: { [options.basicAuthUser]: options.basicAuthPassword },
+        challenge: true,
+        realm: 'metadb'
+      }))
+    }
+
     app.use('/', Controller(metadb, options))
     const { port, host } = options
     if (options.https) {

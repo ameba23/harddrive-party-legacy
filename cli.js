@@ -34,6 +34,8 @@ function displayHelp () {
       --port <port number> default: 2323
       --host <host> default: localhost
       --https - use https
+      --basicAuthUser - username for http basic auth
+      --basicAuthPassword - password for http basic auth
   `)
 }
 
@@ -141,16 +143,19 @@ function Request (options = {}) {
   return axios.create({
     baseURL: `http${useHttps ? 's' : ''}://${host}:${port}/`,
     timeout: REQUEST_TIMEOUT,
-    headers: { 'Content-type': 'application/json' }
+    headers: { 'Content-type': 'application/json' },
+    auth: (options.basicAuthUser && options.basicAuthPassword)
+      ? { username: options.basicAuthUser, password: options.basicAuthPassword }
+      : undefined
   })
 }
 
 function handleError (err) {
-  console.log(err)
-  // console.log(chalk.red(err.code === 'ECONNREFUSED'
-  //   ? 'Connection refused. Is metadb running?'
-  //   : err.response.data.error
-  // ))
+  // console.log(err)
+  console.log(chalk.red(err.code === 'ECONNREFUSED'
+    ? 'Connection refused. Is metadb running?'
+    : err.response.data.error
+  ))
   // TODO: pass the error code
   process.exit(1)
 }
