@@ -4,6 +4,7 @@ const ExpressWs = require('express-ws')
 const bodyParser = require('body-parser')
 const Metadb = require('metadb-core')
 const Controller = require('./controller')
+const debug = require('debug')('metadb-api')
 const https = require('https')
 const fs = require('fs')
 
@@ -24,6 +25,13 @@ exports = module.exports = function (options) {
 
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
+
+  const log = options.log || debug
+  app.use(function (req, res, next) {
+    log(req.method, req.url)
+    next()
+  })
+
   metadb.ready((err) => {
     if (err) {
       console.log(err)
@@ -49,6 +57,7 @@ exports = module.exports = function (options) {
     }
 
     app.use('/', Controller(metadb, options))
+
     const { port, host } = options
     if (options.https) {
       https.createServer({
@@ -58,6 +67,7 @@ exports = module.exports = function (options) {
     } else {
       app.listen(port, host)
     }
+
     console.log(`Web interface available at http${options.https ? 's' : ''}://${host}:${port}`)
     metadb.buildIndexes(() => {})
   })
