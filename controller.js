@@ -34,15 +34,12 @@ module.exports = function (metadb, options) {
 
   router.get('/files', (req, res) => pullback(metadb.query.files(req.query), res, req.query.LIMIT))
 
-  // router.post('/files/:id', (req, res) => { metadb.publish.comment(req.body.comment, Callback(res)) })
-
   router.get('/files/chronological', (req, res) => pullback(metadb.files.pullStreamByTimestamp({ reverse: true }), res))
   router.get('/files/shares', (req, res) => pullback(metadb.query.ownFilesNewestFirst(), res))
   router.get('/files/bypeer/:peerId', (req, res) => pullback(metadb.query.filesByPeer(req.params.peerId), res))
   router.post('/files/subdir', (req, res) => pullback(metadb.query.subdir(req.body.subdir, req.body.opts), res))
   router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
 
-  // there should also be 'cancel' and 'pause/resume' indexing
   router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, Callback(res)) })
   router.delete('/files/index', (req, res) => { metadb.cancelIndexing(req.body.dir) })
   router.get('/share-totals', (req, res) => { pullback(metadb.getShareTotals(), res) })
@@ -50,6 +47,7 @@ module.exports = function (metadb, options) {
   router.get('/files/index/resume', (req, res) => { metadb.resumeIndexing(Callback(res)) })
 
   router.get('/files/:id', (req, res) => { metadb.files.get(req.params.id, Callback(res)) })
+  router.post('/files/:id', (req, res) => { metadb.publish.fileComment(Object.assign(req.body, { sha256: req.params.id }), Callback(res)) })
 
   router.get('/peers', (req, res) => metadb.query.peers(Callback(res)))
 
