@@ -10,9 +10,9 @@ It also aims to be extendible - arbitrary data can be published about files, whi
 
 It has an HTTP API and a simple web interface, meaning it can also be run on an ARM device, NAS, or other remote machine.
 
-![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot1.png)
+![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot1u.png)
 
-![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot2.png)
+![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot2u.png)
 
 ### Why?
 
