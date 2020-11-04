@@ -51,7 +51,7 @@ This module is an http API exposing the functionality from [metadb-core](https:/
 
 ### Installation and usage
 
-- Install globally with npm or yarn, eg: `npm i -g metadb`
+- Install globally with npm or yarn, eg: `npm i -g metadb` (built with node version 11.15.0)
 - Run `metadb start`
 - You should see a link to the web interface served on `localhost`. The default port is `2323`.
 - To get started, you probably want to index some media files, by clicking 'shares' in the web interface, or typing `metadb index <directory>` in another terminal window.
@@ -59,7 +59,16 @@ This module is an http API exposing the functionality from [metadb-core](https:/
 Here you can type a name which will be hashed to give a topic on the DHT to find other peers.  There are currently no known public swarms.
 - You can request files of other peers. Active transfers are not yet displayed in the interface very well, you should be able to see some output in the terminal window running to API.
 
-If you want the process to run indefinitely, you can create a systemd service, or run with `pm2` or `forever`. 
+If you want the process to run indefinitely, you can create a systemd service, or run with [`pm2`](https://www.npmjs.com/package/pm2) or [`forever`](https://www.npmjs.com/package/forever). 
+
+### Setting up a remote instance
+
+- Start with your host name or ip address: `metadb start --host 1.2.3.4`
+- If you want to use https you will needs key and certificate files, which you can create like this:
+- `openssl req -nodes -new -x509 -keyout server.key -out server.cert`
+- then start with options `--httpsKey server.key --httpsCert server.cert` 
+- if you want to set a username and password for http basic auth, use options `--basicAuthUser username --basicAuthPassword password`
+- You can also set these in the config file, which by default is at `~/.metadb/config.yml`
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
