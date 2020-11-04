@@ -63,12 +63,19 @@ If you want the process to run indefinitely, you can create a systemd service, o
 
 ### Setting up a remote instance
 
-- Start with your host name or ip address: `metadb start --host 1.2.3.4`
+- Start with your host name or IP address: `metadb start --host 1.2.3.4`
 - If you want to use https you will needs key and certificate files, which you can create like this:
 - `openssl req -nodes -new -x509 -keyout server.key -out server.cert`
 - then start with options `--httpsKey server.key --httpsCert server.cert` 
 - if you want to set a username and password for http basic auth, use options `--basicAuthUser username --basicAuthPassword password`
-- You can also set these in the config file, which by default is at `~/.metadb/config.yml`
+- You can also set these options permanently in the config file, which by default is at `~/.metadb/config.yml`. For example to set the host, add the line: `host: 1.2.3.4`
+
+### Roadmap
+
+- Commenting and stars - write comments about particular files - back end implemented, front end partially implemented 
+- wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Back end partially implemented.
+- allow lists - only connect to particular peers for a given swarm, creating closed groups.  Implemented at the protocol level only.
+- private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
