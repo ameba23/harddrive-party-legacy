@@ -2,7 +2,7 @@
 
 ### Status: Pre-alpha - expect bugs and breaking changes
 
-metadb is a peer-to-peer filesharing protocol and client with a distributed metadata index. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
+metadb is a peer-to-peer file-sharing protocol and client with a distributed metadata index. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
 
 Peers connect to each other by 'meeting' at a private or semi-private 'swarm topic' on a distributed hash table.
 There is no public, open network - in order to connect to another peer you must both be connected to a swarm with the same name. This might be something obvious, like 'techno', or it could be a very difficult to guess random string.
@@ -39,7 +39,7 @@ It is largely based on the DAT/hyper stack with a few peculiarities.
 
 Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be the hash of a commonly known word or phrase, or a key chosen a random.  The topic key is hashed (giving the 'discovery key') and knowledge of the original key is proved in a handshake, which also establishes the key used to sign entries to the peer's list of files - which is a hypercore append-only log.
 
-Each connection between two peers comprises of two encrypted streams, one for replicating indexes using 'multifeed',  and one for transferring files.
+Each connection between two peers comprises of two encrypted streams, one for replicating indexes using 'multifeed', and one for transferring files.
 
 Since it is mostly based on the hyper stack, you might wonder why files are not transferred using hyperdrive.  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Metadb is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
 

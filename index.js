@@ -4,7 +4,7 @@ const ExpressWs = require('express-ws')
 const bodyParser = require('body-parser')
 const Metadb = require('metadb-core')
 const Controller = require('./controller')
-const debug = require('debug')('metadb-api')
+const log = require('debug')('metadb-api')
 const https = require('https')
 const fs = require('fs')
 
@@ -15,6 +15,7 @@ exports = module.exports = function (options) {
 
   const app = express()
   ExpressWs(app)
+
   app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Credentials', true)
@@ -26,7 +27,6 @@ exports = module.exports = function (options) {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  const log = options.log || debug
   app.use(function (req, res, next) {
     log(req.method, req.url)
     next()
@@ -59,6 +59,16 @@ exports = module.exports = function (options) {
     app.use('/', Controller(metadb, options))
 
     const { port, host } = options
+
+    process.on('uncaughtException', (err) => {
+      console.log(
+        err.errno === 'EADDRINUSE'
+          ? `Address in use at ${host}:${port} - either metadb is already running, or something else is using that port`
+          : err
+      )
+      process.exit(1)
+    })
+
     if (options.https) {
       https.createServer({
         key: fs.readFileSync(options.httpsKey),
