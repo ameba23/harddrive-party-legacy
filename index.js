@@ -28,7 +28,7 @@ exports = module.exports = function (options) {
   app.use(bodyParser.json())
 
   app.use(function (req, res, next) {
-    log(req.method, req.url)
+    log(req.method, req.url, req.body)
     next()
   })
 

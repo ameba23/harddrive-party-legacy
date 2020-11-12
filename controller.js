@@ -48,9 +48,9 @@ module.exports = function (metadb, options) {
   router.post('/files/search', (req, res) => pullback(metadb.query.filenameSubstring(req.body.searchterm), res))
 
   // Index a local directory
-  router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, Callback(res)) })
+  router.post('/files/index', (req, res) => { metadb.indexFiles(req.body.dir, req.body.options, Callback(res)) })
   // Stop indexing a local directory
-  router.delete('/files/index', (req, res) => { metadb.cancelIndexing(req.body.dir) })
+  router.delete('/files/index', (req, res) => { metadb.cancelIndexing(req.body.dir, Callback(res)) })
   // Pause indexing a local directory TODO dont use GET
   router.get('/files/index/pause', (req, res) => { metadb.pauseIndexing(Callback(res)) })
   // Resume indexing a local directory TODO dont use GET

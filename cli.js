@@ -64,7 +64,7 @@ if (argv._[0] === 'start') {
         console.log('Missing directory to index')
         process.exit(1)
       }
-      request.post('/files/index', { dir })
+      request.post('/files/index', { dir, options: { skipExtraction: argv.skipExtraction } })
         .then((res) => {
           console.log(`Beginning indexing of directory ${JSON.parse(res.config.data).dir}`)
         })
@@ -154,7 +154,6 @@ function Request (options = {}) {
 }
 
 function handleError (err) {
-  // console.log(err)
   console.log(red(err.code === 'ECONNREFUSED'
     ? 'Connection refused. Is metadb running?'
     : err.response.data.error
@@ -202,7 +201,7 @@ function displaySettings ({ data }) {
   console.log(connectedSwarms.length ? `Connected swarms: ${yellow(connectedSwarms)}` : 'Not connected.')
   console.log(`Download path: ${yellow(data.downloadPath)}`)
   if (data.indexing) console.log(`Indexing - ${yellow(data.indexing)} - ${data.indexProgrss}% done...`)
-  console.log(data)
+  if (argv.test) console.log(data)
 }
 
 function readableBytes (bytes) {
