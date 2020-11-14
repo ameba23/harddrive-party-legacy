@@ -117,12 +117,16 @@ module.exports = function (metadb, options) {
   // Handle websockes
   router.ws('/', (ws, req) => {
     metadb.events.on('ws', (message) => {
-      log('Got message', message, 'sending thru ws')
-      try {
-        ws.send(message)
-      } catch (err) {
-        log('Error when sending message on ws.', err)
+      if (ws.readyState === 1) {
+        log('Got message', message, 'sending thru ws')
+        ws.send(message, (err) => {
+          if (err) log('Error when sending message on ws.', err)
+        })
       }
+    })
+    ws.on('close', () => {
+      // Not sure if this is needed
+      ws.terminate()
     })
   })
 
