@@ -9,23 +9,15 @@ There is no public, open network - in order to connect to another peer you must 
 
 metadb aims to be transport agnostic - a simple encrypted file transfer system is used by default, but it is also possible to include links for other protocols in the index, for example Gnutella, IPFS, DAT, Bittorrent, or HTTP. 
 
-It also aims to be extendible - arbitrary data can be published about files, such as comments, reviews, 'stars', links to web resources, or integration with local media libraries such as calibre or music player daemon.
+It also aims to be extendible - arbitrary data can be published about files, such as comments, reviews, 'stars', links to web resources, and integration with local media libraries such as calibre or music player daemon could be possible in the future.
 
 ![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot1u.png)
 
 ![screenshot metadb ui](http://ameba.ehion.com/download/metadb-screenshot2u.png)
 
-### Features
+### Why another file-sharing protocol?
 
-- It has an HTTP API and a simple web interface, meaning it can also be run on an ARM device, NAS, or other remote machine. Supports https and http basic auth.
-- Offline first - the index is stored locally and swarms can be connected to over multicast DNS as well as the DHT, so it works over a local network (great for LAN parties).
-- Remote queueing - requests are stored locally until connecting to a peer who has the requested files. They are then queued remotely until a download slot becomes free.
-- Database built on [kappa-core](https://github.com/kappa-db/kappa-core)
-- Pluggable metadata extractors add information about files to the index such as id3 tags and text previews. See [metadata-extract](https://github.com/ameba23/metadata-extract).
-
-### Why?
-
-There are many great peer-to-peer systems for publishing and downloading files, but not so many of them provide a distributed index. In some cases files get shared only with specific individuals, and in other cases they are listed on a centralised index.
+There are many great peer-to-peer systems for publishing and downloading files, but not so many of them provide a distributed index. In some cases files get shared only with specific individuals, and in other cases they are listed on a centralised index which relies on servers.
 
 Some projects, like Gnutella, provide a peer-to-peer mechanism for searching for files, but the difference here is that the entire index is transferred up-front, rather than specific requests propagating over the network.  This means that searches are fast, and the index can be browsed when offline.
 
@@ -33,17 +25,30 @@ Another difference is that metadb has a system of private and semi-private group
 
 The hope is that having semi-private communities will bring a sense of responsibility and accountability whilst still allowing new peers to discover content. There is also a possibility to have more closed groups (where index entries are encrypted to the group key), as well as allow-lists and block-lists for specific peers.
 
+### Its a bit like:
+
+- [Soulseek](http://www.soulseekqt.net/news/) - in that you can browse files offered by a specific peer. But although there are some open-source clients, Soulseek uses a closed-source protocol and relies on a server for indexing.
+- [muWire](https://muwire.com/) - a great file-sharing platform which uses i2p for anonymity.  In many ways muWire is a superior project. However it can be impractical for transferring a large amount of files.
+
+### Features
+
+- Remote control. It has an HTTP API and a simple web interface, meaning it can also be run on an ARM device, NAS, or other remote machine. Supports https and http basic auth.
+- Offline first - the index is stored locally and swarms can be connected to over multicast DNS as well as the DHT, so it works over a local network (great for LAN parties).
+- Remote queueing - requests are stored locally until connecting to a peer who has the requested files. They are then queued remotely until a download slot becomes free.
+- Database built on [kappa-core](https://github.com/kappa-db/kappa-core)
+- Pluggable metadata extractors add information about files to the index such as id3 tags and text previews. See [metadata-extract](https://github.com/ameba23/metadata-extract).
+
 ### How does it work?
 
 It is largely based on the DAT/hyper stack with a few peculiarities.
 
 Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be the hash of a commonly known word or phrase, or a key chosen a random.  The topic key is hashed (giving the 'discovery key') and knowledge of the original key is proved in a handshake, which also establishes the key used to sign entries to the peer's list of files - which is a hypercore append-only log.
 
-Each connection between two peers comprises of two encrypted streams, one for replicating indexes using 'multifeed', and one for transferring files.
+Each connection between two peers comprises of two encrypted streams, one for replicating indexes using 'multifeed', and one for transferring files using a custom made protocol.
 
 Since it is mostly based on the hyper stack, you might wonder why files are not transferred using hyperdrive.  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Metadb is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
 
-You might also wonder why use a custom handshake and not NOISE. We want to establish a signing key, and noise is based only on diffie-hellman. But its possible to add a custom payload to a noise handshake, and perhaps thats what will happen, especially if people want the reassurance of using an established protocol, but for now this uses a custom handshake.
+You might also wonder why a custom made handshake is used and not NOISE. We want to establish a signing key, and noise is based only on diffie-hellman. But it is possible to add a custom payload to a noise handshake, and perhaps thats what will happen, especially if people want the reassurance of using an established protocol, but for now this uses a custom handshake.
 
 ### This module
 
@@ -70,10 +75,22 @@ If you want the process to run indefinitely, you can create a systemd service, o
 - if you want to set a username and password for http basic auth, use options `--basicAuthUser username --basicAuthPassword password`
 - You can also set these options permanently in the config file, which by default is at `~/.metadb/config.yml`. For example to set the host, add the line: `host: 1.2.3.4`
 
+### Development
+
+Clone the repository, install with `yarn` or `npm i`, and run with:
+
+`DEBUG=metadb* ./cli.js start --test`.
+
+This will log debugging information and put downloaded files in the configuration directory.
+
+To clear all application data and start fresh:
+
+`rm -rf ~/.metadb`
+
 ### Roadmap
 
-- Commenting and stars - write comments about particular files - back end implemented, front end partially implemented 
-- wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Back end partially implemented.
+- Commenting and stars - write comments about particular files - back end implemented, front end partially implemented.
+- wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Partially implemented.
 - allow lists - only connect to particular peers for a given swarm, creating closed groups.  Implemented at the protocol level only.
 - private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
 
