@@ -1,4 +1,4 @@
-## metadb - peer-to-peer file-sharing
+## metadb - peer-to-peer media index and file-sharing
 
 ### Status: Pre-alpha - expect bugs and breaking changes
 
@@ -19,7 +19,7 @@ It also aims to be extendible - arbitrary data can be published about files, suc
 
 There are many great peer-to-peer systems for publishing and downloading files, but not so many of them provide a distributed index. In some cases files get shared only with specific individuals, and in other cases they are listed on a centralised index which relies on servers.
 
-Some projects, like Gnutella, provide a peer-to-peer mechanism for searching for files, but the difference here is that the entire index is transferred up-front, rather than specific requests propagating over the network.  This means that searches are fast, and the index can be browsed when offline.
+Some projects, like [Gnutella](https://en.wikipedia.org/wiki/Gnutella), provide a peer-to-peer mechanism for searching for files, but the difference here is that the entire index is transferred up-front, rather than specific requests propagating over the network.  This means that searches are fast, and the index can be browsed when offline.
 
 Another difference is that metadb has a system of private and semi-private groups, which can overlap. You can only transfer files with a peer you are actually connected to by both knowing the same 'topic' on the DHT. But indexes are 'gossiped' over indirect connections. So you can browse the indexes of a wider community of peers than you are currently connected to.
 
@@ -29,6 +29,7 @@ The hope is that having semi-private communities will bring a sense of responsib
 
 - [Soulseek](http://www.soulseekqt.net/news/) - in that you can browse files offered by a specific peer. But although there are some open-source clients, Soulseek uses a closed-source protocol and relies on a server for indexing.
 - [muWire](https://muwire.com/) - a great file-sharing platform which uses i2p for anonymity.  In many ways muWire is a superior project. However it can be impractical for transferring a large amount of files.
+- Bitzi - was a collaborative online database with metadata about media files, with integration with several (then) popular filesharing platforms. [archived version of bitzi website](https://web.archive.org/web/20051218070459/http://bitzi.com/) [wikipedia article](https://en.wikipedia.org/wiki/Bitzi)
 
 ### Features
 
