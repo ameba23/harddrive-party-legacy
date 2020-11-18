@@ -92,6 +92,7 @@ To clear all application data and start fresh:
 - Commenting and stars - write comments about particular files - back end implemented, front end partially implemented.
 - wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Partially implemented.
 - allow lists - only connect to particular peers for a given swarm, creating closed groups.  Implemented at the protocol level only.
+- fulltext search. Search function currently uses a substring search of filepaths only
 - private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
