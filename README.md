@@ -29,7 +29,7 @@ The hope is that having semi-private communities will bring a sense of responsib
 
 - [Soulseek](http://www.soulseekqt.net/news/) - in that you can browse files offered by a specific peer. But although there are some open-source clients, Soulseek uses a closed-source protocol and relies on a server for indexing.
 - [muWire](https://muwire.com/) - a great file-sharing platform which uses i2p for anonymity.  In many ways muWire is a superior project. However it can be impractical for transferring a large amount of files.
-- Bitzi - was a collaborative online database with metadata about media files, with integration with several (then) popular filesharing platforms. [archived version of bitzi website](https://web.archive.org/web/20051218070459/http://bitzi.com/) [wikipedia article](https://en.wikipedia.org/wiki/Bitzi)
+- Bitzi - was a collaborative online database with metadata about media files, with integration with several (then) popular filesharing platforms. [archived version of bitzi website](https://web.archive.org/web/20051218070459/http://bitzi.com/), [wikipedia article](https://en.wikipedia.org/wiki/Bitzi)
 
 ### Features
 
@@ -41,15 +41,15 @@ The hope is that having semi-private communities will bring a sense of responsib
 
 ### How does it work?
 
-It is largely based on the DAT/hyper stack with a few peculiarities.
+It is largely based on the [DAT](https://dat.foundation/)/[hyper](https://hypercore-protocol.org/) stack with a few peculiarities.
 
-Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be the hash of a commonly known word or phrase, or a key chosen a random.  The topic key is hashed (giving the 'discovery key') and knowledge of the original key is proved in a handshake, which also establishes the key used to sign entries to the peer's list of files - which is a hypercore append-only log.
+Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be the hash of a commonly known word or phrase, or a key chosen a random.  The topic key is hashed (giving the 'discovery key') and knowledge of the original key is proved in a handshake, which also establishes the key used to sign entries to the peer's list of files - which is a [hypercore](https://github.com/hypercore-protocol/hypercore) append-only log.
 
-Each connection between two peers comprises of two encrypted streams, one for replicating indexes using 'multifeed', and one for transferring files using a custom made protocol.
+Each connection between two peers comprises of two encrypted streams, one for replicating indexes using [multifeed](https://github.com/kappa-db/multifeed), and one for transferring files using a [custom made protocol](https://github.com/ameba23/metadb-core/tree/master/lib/file-transfer).
 
-Since it is mostly based on the hyper stack, you might wonder why files are not transferred using hyperdrive.  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Metadb is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
+Since it is mostly based on the hyper stack, you might wonder why files are not transferred using [hyperdrive](https://github.com/hypercore-protocol/hyperdrive).  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Metadb is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
 
-You might also wonder why a custom made handshake is used and not NOISE. We want to establish a signing key, and noise is based only on diffie-hellman. But it is possible to add a custom payload to a noise handshake, and perhaps thats what will happen, especially if people want the reassurance of using an established protocol, but for now this uses a custom handshake.
+You might also wonder why a custom made handshake is used and not [NOISE](http://noiseprotocol.org/). We want to establish a signing key, and noise is based only on diffie-hellman. But it is possible to add a custom payload to a noise handshake, and perhaps thats what will happen, especially if people want the reassurance of using an established protocol, but for now this uses a [custom handshake](https://github.com/ameba23/metadb-core/blob/master/lib/handshake.js).
 
 ### This module
 
