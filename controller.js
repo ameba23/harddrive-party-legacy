@@ -82,11 +82,12 @@ module.exports = function (metadb, options) {
 
   // List peers
   router.get('/peers', (req, res) => processIterator(metadb.listPeers(), res))
+  router.post('/peers', (req, res) => { handleAsync(metadb.addFeed(req.body.peerId), res) })
 
   // List settings
   router.get('/settings', (req, res) => { handleAsync(metadb.getSettings(), res) })
   // Update settings
-  // router.post('/settings', (req, res) => { metadb.setSettings(req.body, Callback(res)) })
+  router.post('/settings', (req, res) => { handleAsync(metadb.setSettings(req.body), res) })
 
   // List requested files
   router.get('/request', (req, res) => processIterator(metadb.client.wishlist.createReadStream(), res))
@@ -155,6 +156,7 @@ module.exports = function (metadb, options) {
 }
 
 function handleSync (output, res) {
+  if (output instanceof Error) return res.status(422).json({ error: output.message })
   res.status(200).json(output || {})
 }
 
