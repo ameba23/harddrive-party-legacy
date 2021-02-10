@@ -34,6 +34,10 @@ module.exports = function (metadb, options) {
     // res.sendFile(uiFilePath)
   })
 
+  router.get('/favicon.svg', (req, res) => {
+    res.sendFile(path.join(path.resolve(__dirname), 'favicon.svg'))
+  })
+
   // List files
   router.get('/files', (req, res) => processIterator(metadb.query.files.stream(), res, req.query.LIMIT)) // pass req.query
   // List files in order they were added
@@ -92,9 +96,9 @@ module.exports = function (metadb, options) {
   // List requested files
   router.get('/request', (req, res) => processIterator(metadb.client.wishlist.createReadStream(), res))
   // Request files with given hashes
-  router.post('/request', (req, res) => { handleAsync(metadb.request(req.body.files), res) })
+  router.post('/request', (req, res) => { handleAsync(metadb.client.request(req.body.files), res) })
   // Cancel requests for files with given hashes
-  // router.delete('/request', (req, res) => { metadb.unrequest(req.body.files, Callback(res)) })
+  // router.delete('/request', (req, res) => { metadb.client.unrequest(req.body.files, Callback(res)) })
 
   // Connect to a given swarm
   router.post('/swarm', (req, res) => { handleSync(metadb.swarm.join(req.body.swarm), res) })
