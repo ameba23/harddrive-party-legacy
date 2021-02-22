@@ -94,7 +94,7 @@ module.exports = function (metadb, options) {
   router.post('/settings', (req, res) => { handleAsync(metadb.setSettings(req.body), res) })
 
   // List requested files
-  router.get('/request', (req, res) => processIterator(metadb.client.wishlist.createReadStream(), res))
+  router.get('/request', (req, res) => processIterator(metadb.client.listRequests(), res))
   // Request files with given hashes
   router.post('/request', (req, res) => { handleAsync(metadb.client.request(req.body.files), res) })
   // Cancel requests for files with given hashes
