@@ -110,13 +110,12 @@ module.exports = function (metadb, options) {
   // List uploaded files
   router.get('/uploads', (req, res) => { processIterator(metadb.server.getUploads(), res) })
   // Send a downloaded file to the browser
-  // router.get('/downloads/:hash', (req, res) => {
-  //   metadb.getDownloadedFileByHash(req.params.hash, (err, fileObject) => {
-  //     if (err) return res.status(422).json({ err: 'No such file' })
-  //     const filepath = path.join(metadb.config.downloadPath, fileObject.name)
-  //     res.sendFile(filepath)
-  //   })
-  // })
+  router.get('/downloads/:hash', async (req, res) => {
+    const file = await metadb.client.getDownloadedFileByHash(req.params.hash)
+      .catch((err) => { return err })
+    if (file instanceof Error) return res.status(422).json({ err: file.message })
+    res.sendFile(file.name)
+  })
 
   // publish a 'wall message'
   // router.post('/wall-message', (req, res) => { metadb.publish.wallMessage(req.body.message, req.body.swarmKey, Callback(res)) })
