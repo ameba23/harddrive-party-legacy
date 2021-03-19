@@ -114,7 +114,7 @@ module.exports = function (metadb, options) {
     const file = await metadb.client.getDownloadedFileByHash(req.params.hash)
       .catch((err) => { return err })
     if (file instanceof Error) return res.status(422).json({ err: file.message })
-    res.sendFile(file.name)
+    res.sendFile(file.filename)
   })
 
   // publish a 'wall message'

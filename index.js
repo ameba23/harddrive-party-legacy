@@ -83,6 +83,8 @@ exports = module.exports = async function (options) {
   metadb.connect().catch((err) => {
     console.log(err)
     process.exit(1)
+  }).then(() => {
+    log('Connected.')
   })
 
   return app
