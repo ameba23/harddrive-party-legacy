@@ -118,9 +118,9 @@ module.exports = function (metadb, options) {
   })
 
   // publish a 'wall message'
-  // router.post('/wall-message', (req, res) => { metadb.publish.wallMessage(req.body.message, req.body.swarmKey, Callback(res)) })
+  router.post('/wall-message', (req, res) => { handleAsync(metadb.wallMessage(req.body.message, req.body.swarmKey), res) })
   // get wall messages for a given swarm
-  // router.post('/wall-message/by-swarm-key', (req, res) => { pullback(metadb.core.api.wallMessages.pullBySwarmKey(req.body.swarmKey), res) })
+  router.post('/wall-message/by-swarm-key', (req, res) => { processIterator(metadb.query.wallMessages.bySwarmKey(req.body.swarmKey), res) })
 
   // Open a file locally with xdg-open - currently disabled
   // router.post('/open', (req, res) => {
