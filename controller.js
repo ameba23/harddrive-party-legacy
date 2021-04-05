@@ -1,4 +1,3 @@
-const pull = require('pull-stream')
 const express = require('express')
 const router = express.Router()
 const buildUi = require('metadb-ui')
@@ -175,15 +174,6 @@ function handleError (res) {
   }
 }
 
-function Callback (res) {
-  return function (err, result) {
-    if (err) console.log(err)
-    return err
-      ? res.status(422).json({ error: err.message })
-      : res.status(200).json(result)
-  }
-}
-
 async function processIterator (iterator, res, maxEntries) {
   if (typeof maxEntries === 'string') maxEntries = parseInt(maxEntries)
   maxEntries = maxEntries || defaultMaxEntries
@@ -194,15 +184,6 @@ async function processIterator (iterator, res, maxEntries) {
   }
   // TODO handle errors
   return res.status(200).json(output)
-}
-
-function pullback (stream, res, maxEntries) {
-  if (typeof maxEntries === 'string') maxEntries = parseInt(maxEntries)
-  return pull(
-    stream,
-    pull.take(maxEntries || defaultMaxEntries),
-    pull.collect(Callback(res))
-  )
 }
 
 async function build (uiFilePath, options) {
