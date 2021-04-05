@@ -22,8 +22,7 @@
     "express-ws": "^4.0.0",
     "metadb-core": "^1.2.2",
     "metadb-ui": "^2.0.4",
-    "minimist": "^1.2.5",
-    "pull-stream": "^3.6.14"
+    "minimist": "^1.2.5"
   },
   "keywords": [
     "peer-to-peer",

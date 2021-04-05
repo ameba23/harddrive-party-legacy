@@ -34,6 +34,7 @@ function displayHelp () {
       ${green('request')} ${yellow('<hash(es)>')} - request one or more files by hash
 
     Global options:
+      --debug turn on logging
       --host ${yellow('<host>')} default: localhost
       --port ${yellow('<port number>')} default: 2323
       --https - use https
@@ -50,6 +51,10 @@ if (!argv._.length) {
 if (argv.help || argv._[0] === 'help') {
   displayHelp()
   process.exit(0)
+}
+
+if (argv.debug) {
+  process.env.DEBUG = 'metadb*'
 }
 
 if (argv._[0] === 'start') {
