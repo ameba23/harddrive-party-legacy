@@ -2,7 +2,7 @@
 
 ### Status: Pre-alpha - expect bugs and breaking changes
 
-harddrive-party is a peer-to-peer file-sharing application which uses a distributed media file metadata index, metadb. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
+Harddrive-party is a peer-to-peer file-sharing application which uses a distributed media file metadata index, metadb. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
 
 Peers find each other by 'meeting' at a private or semi-private 'party' by using a common swarm name on a distributed hash table.
 There is no public, open network - in order to connect to another peer, you either need to know their public key, or both be connected to a 'swarm' with the same name. This might be something obvious, like 'techno', or it could be a very difficult to guess random string.
@@ -28,7 +28,7 @@ The hope is that having semi-private communities will bring a sense of responsib
 ### Its a bit like:
 
 - [Soulseek](http://www.soulseekqt.net/news/) - in that you can browse files offered by a specific peer. But although there are some open-source clients, Soulseek uses a closed-source protocol and relies on a server for indexing.
-- [muWire](https://muwire.com/) - a great file-sharing platform which uses i2p for anonymity.  In many ways muWire is a superior project. However it can be impractical for transferring a large amount of files.
+- [muWire](https://muwire.com/) - a great file-sharing platform which uses i2p for anonymity.
 - Bitzi - was a collaborative online database with metadata about media files, with integration with several (then) popular filesharing platforms. [archived version of bitzi website](https://web.archive.org/web/20051218070459/http://bitzi.com/), [wikipedia article](https://en.wikipedia.org/wiki/Bitzi)
 
 ### Features

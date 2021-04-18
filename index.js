@@ -9,7 +9,7 @@ const https = require('https')
 const fs = require('fs')
 
 exports = module.exports = async function (options) {
-  console.log(require('./metadb-banner'))
+  console.log(require('./banner'))
 
   const metadb = new Metadb(options)
 
