@@ -47,9 +47,7 @@ Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hy
 
 Each connection between two peers comprises of two encrypted streams, one for replicating indexes using [multifeed](https://github.com/kappa-db/multifeed), and one for transferring files using a [custom made protocol](https://github.com/ameba23/metadb-core/tree/master/lib/file-transfer).
 
-Since it is mostly based on the hyper stack, you might wonder why files are not transferred using [hyperdrive](https://github.com/hypercore-protocol/hyperdrive).  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Metadb is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
-
-You might also wonder why a custom made handshake is used and not [NOISE](http://noiseprotocol.org/). We want to establish a signing key, and noise is based only on diffie-hellman. But it is possible to add a custom payload to a noise handshake, and perhaps thats what will happen, especially if people want the reassurance of using an established protocol, but for now this uses a [custom handshake](https://github.com/ameba23/metadb-core/blob/master/lib/handshake.js).
+Since it is mostly based on the hyper stack, you might wonder why files are not transferred using [hyperdrive](https://github.com/hypercore-protocol/hyperdrive).  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Harddrive-party is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
 
 ### This module
 
@@ -74,19 +72,19 @@ If you want the process to run indefinitely, you can create a systemd service, o
 - `openssl req -nodes -new -x509 -keyout server.key -out server.cert`
 - then start with options `--httpsKey server.key --httpsCert server.cert` 
 - if you want to set a username and password for http basic auth, use options `--basicAuthUser username --basicAuthPassword password`
-- You can also set these options permanently in the config file, which by default is at `~/.metadb/config.yml`. For example to set the host, add the line: `host: 1.2.3.4`
+- You can also set these options permanently in the config file, which by default is at `~/.harddrive-party/config.yml`. For example to set the host, add the line: `host: 1.2.3.4`
 
 ### Development
 
 Clone the repository, install with `yarn` or `npm i`, and run with:
 
-`DEBUG=metadb* ./cli.js start --test`.
+`./cli.js start --debug --test`.
 
 This will log debugging information and put downloaded files in the configuration directory.
 
 To clear all application data and start fresh:
 
-`rm -rf ~/.metadb`
+`rm -rf ~/.harddrive-party`
 
 ### Roadmap
 
