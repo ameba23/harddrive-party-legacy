@@ -1,5 +1,5 @@
 {
-  "name": "metadb",
+  "name": "harddrive-party",
   "version": "2.1.1",
   "description": "peer-to-peer filesharing",
   "main": "index.js",
@@ -37,10 +37,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ameba23/metadb.git"
+    "url": "git+https://github.com/ameba23/harddrive-party.git"
   },
   "bugs": {
-    "url": "https://github.com/ameba23/metadb/issues"
+    "url": "https://github.com/ameba23/harddrive-party/issues"
   },
-  "homepage": "https://github.com/ameba23/metadb"
+  "homepage": "https://github.com/ameba23/harddrive-party"
 }
