@@ -1,6 +1,6 @@
 {
   "name": "harddrive-party",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "peer-to-peer filesharing",
   "main": "index.js",
   "scripts": {
