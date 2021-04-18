@@ -7,9 +7,11 @@ const Controller = require('./controller')
 const log = require('debug')('metadb-api')
 const https = require('https')
 const fs = require('fs')
+const { version } = require('./package.json')
 
 exports = module.exports = async function (options) {
   console.log(require('./banner'))
+  console.log(`Version ${version}`)
 
   const metadb = new Metadb(options)
 

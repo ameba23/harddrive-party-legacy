@@ -11,7 +11,7 @@ const DEFAULTPORT = process.env.METADB_PORT || 2323
 const REQUEST_TIMEOUT = 5000
 
 function displayHelp () {
-  console.log(`metadb version ${version}
+  console.log(`version ${version}
 
     Usage:  ${magenta(basename(process.argv[1]))} ${green('command')} options
     Commands:
@@ -34,7 +34,7 @@ function displayHelp () {
       ${green('request')} ${yellow('<hash(es)>')} - request one or more files by hash
 
     Global options:
-      --debug turn on logging
+      --debug - turn on logging
       --host ${yellow('<host>')} default: localhost
       --port ${yellow('<port number>')} default: 2323
       --https - use https
@@ -48,7 +48,7 @@ if (!argv._.length) {
   argv._ = ['settings']
 }
 
-if (argv.help || argv._[0] === 'help') {
+if (argv.help || argv.version || ['help', 'version'].includes(argv._[0])) {
   displayHelp()
   process.exit(0)
 }
