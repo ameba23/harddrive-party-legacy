@@ -8,7 +8,7 @@
     "start": "node index.js"
   },
   "bin": {
-    "metadb": "cli.js"
+    "harddrive-party": "cli.js"
   },
   "author": "ameba23",
   "license": "AGPL-3.0-only",
