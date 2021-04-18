@@ -1,11 +1,11 @@
-## metadb - peer-to-peer media index and file-sharing
+## harddrive-party - peer-to-peer media index and file-sharing
 
 ### Status: Pre-alpha - expect bugs and breaking changes
 
-metadb is a peer-to-peer file-sharing protocol and client with a distributed metadata index. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
+harddrive-party is a peer-to-peer file-sharing application which uses a distributed media file metadata index, metadb. Peers create an index by extracting information about media files they want to share, and replicating this data with other peers, to create a searchable distributed database of all known files.
 
-Peers connect to each other by 'meeting' at a private or semi-private 'swarm topic' on a distributed hash table.
-There is no public, open network - in order to connect to another peer you must both be connected to a swarm with the same name. This might be something obvious, like 'techno', or it could be a very difficult to guess random string.
+Peers find each other by 'meeting' at a private or semi-private 'party' by using a common swarm name on a distributed hash table.
+There is no public, open network - in order to connect to another peer, you either need to know their public key, or both be connected to a 'swarm' with the same name. This might be something obvious, like 'techno', or it could be a very difficult to guess random string.
 
 metadb aims to be transport agnostic - a simple encrypted file transfer system is used by default, but it is also possible to include links for other protocols in the index, for example Gnutella, IPFS, DAT, Bittorrent, or HTTP. 
 
@@ -21,9 +21,9 @@ There are many great peer-to-peer systems for publishing and downloading files, 
 
 Some projects, like [Gnutella](https://en.wikipedia.org/wiki/Gnutella), provide a peer-to-peer mechanism for searching for files, but the difference here is that the entire index is transferred up-front, rather than specific requests propagating over the network.  This means that searches are fast, and the index can be browsed when offline.
 
-Another difference is that metadb has a system of private and semi-private groups, which can overlap. You can only transfer files with a peer you are actually connected to by both knowing the same 'topic' on the DHT. But indexes are 'gossiped' over indirect connections. So you can browse the indexes of a wider community of peers than you are currently connected to.
+Another difference is that metadb has a system of private and semi-private groups, which can overlap. You can only transfer files with a peer you are actually connected to. But it is possible to 'gossip' indexes over indirect connections, providing you know a peer's public key. So the indexes of a wider community of peers than you are currently connected to.
 
-The hope is that having semi-private communities will bring a sense of responsibility and accountability whilst still allowing new peers to discover content. There is also a possibility to have more closed groups (where index entries are encrypted to the group key), as well as allow-lists and block-lists for specific peers.
+The hope is that having semi-private communities will bring a sense of responsibility and accountability whilst still allowing new peers to discover content. There is also a possibility to have more closed groups, as well as allow-lists and block-lists for specific peers.
 
 ### Its a bit like:
 
@@ -57,10 +57,10 @@ This module is an http API exposing the functionality from [metadb-core](https:/
 
 ### Installation and usage
 
-- Install globally with npm or yarn, eg: `npm i -g metadb` (built with node version 11.15.0)
-- Run `metadb start`
+- Install globally with npm or yarn, eg: `npm i -g harddrive-party` (built with node version 11.15.0)
+- Run `harddrive-party start`
 - You should see a link to the web interface served on `localhost`. The default port is `2323`.
-- To get started, you probably want to index some media files, by clicking 'shares' in the web interface, or typing `metadb index <directory>` in another terminal window.
+- To get started, you probably want to index some media files, by clicking 'shares' in the web interface, or typing `harddrive-party index <directory>` in another terminal window.
 - To connect to other users and merge databases, you need to connect to a swarm, on the 'connection' page.
 Here you can type a name which will be hashed to give a topic on the DHT to find other peers.  There are currently no known public swarms.
 - You can request files of other peers. Active transfers are not yet displayed in the interface very well, you should be able to see some output in the terminal window running to API.
@@ -69,7 +69,7 @@ If you want the process to run indefinitely, you can create a systemd service, o
 
 ### Setting up a remote instance
 
-- Start with your host name or IP address: `metadb start --host 1.2.3.4`
+- Start with your host name or IP address: `harddrive-party start --host 1.2.3.4`
 - If you want to use https you will needs key and certificate files, which you can create like this:
 - `openssl req -nodes -new -x509 -keyout server.key -out server.cert`
 - then start with options `--httpsKey server.key --httpsCert server.cert` 
@@ -91,10 +91,9 @@ To clear all application data and start fresh:
 ### Roadmap
 
 - Commenting and stars - write comments about particular files - back end implemented, front end partially implemented.
-- wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Partially implemented.
-- allow lists - only connect to particular peers for a given swarm, creating closed groups.  Implemented at the protocol level only.
-- fulltext search. Search function currently uses a substring search of filepaths only
-- private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
+- Wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Partially implemented.
+- Fulltext search. Search function currently uses a substring search of filepaths only
+- Private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
