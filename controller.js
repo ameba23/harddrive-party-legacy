@@ -125,7 +125,6 @@ module.exports = function (metadb, options) {
   // router.post('/open', (req, res) => {
   //   if (options.host !== 'localhost') return res.status(422).json({ err: 'Can only open files on localhost' })
   //   const filepath = path.join(metadb.config.downloadPath, req.body.file)
-  //   // console.log(`Opening "${filepath}"`)
   //   exec(`xdg-open "${filepath}"`)
   //   return res.status(200).json({ file: req.body.file })
   //   // res.sendFile(filepath)
@@ -140,7 +139,6 @@ module.exports = function (metadb, options) {
   // Handle websockes
   router.ws('/', (ws, req) => {
     metadb.on('ws', (message) => {
-      console.log(122443)
       if (ws.readyState === 1) {
         log('Got message', message, 'sending thru ws')
         ws.send(JSON.stringify(message), (err) => {
