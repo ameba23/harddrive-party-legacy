@@ -20,8 +20,8 @@
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-ws": "^4.0.0",
-    "metadb-core": "^1.2.2",
-    "metadb-ui": "^2.0.4",
+    "metadb-core": "^2.0.0",
+    "metadb-ui": "^2.0.5",
     "minimist": "^1.2.5"
   },
   "keywords": [
