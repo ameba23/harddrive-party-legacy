@@ -37,17 +37,17 @@ The hope is that having semi-private communities will bring a sense of responsib
 - Offline first - the index is stored locally and swarms can be connected to over multicast DNS as well as the DHT, so it works over a local network (great for LAN parties).
 - Remote queueing - requests are stored locally until connecting to a peer who has the requested files. They are then queued remotely until a download slot becomes free.
 - Database built on [kappa-core](https://github.com/kappa-db/kappa-core)
-- Pluggable metadata extractors add information about files to the index such as id3 tags and text previews. See [metadata-extract](https://github.com/ameba23/metadata-extract).
+- Pluggable metadata extractors add information about files to the index such as id3 tags and text previews of PDF and EPUB. See [metadata-extract](https://github.com/ameba23/metadata-extract).
 
 ### How does it work?
 
 It is largely based on the [DAT](https://dat.foundation/)/[hyper](https://hypercore-protocol.org/) stack with a few peculiarities.
 
-Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be the hash of a commonly known word or phrase, or a key chosen a random.  The topic key is hashed (giving the 'discovery key') and knowledge of the original key is proved in a handshake, which also establishes the key used to sign entries to the peer's list of files - which is a [hypercore](https://github.com/hypercore-protocol/hypercore) append-only log.
+Peers meet through joining a topic on the [hyperswarm DHT](https://github.com/hyperswarm), which could be a commonly known word or phrase, or some random string.  The topic name is hashed (giving the 'discovery key') and knowledge of the original key is proved in a simple handshake, and the key of the peer's [hypercore](https://github.com/hypercore-protocol/hypercore) append-only log is announced.
 
-Each connection between two peers comprises of two encrypted streams, one for replicating indexes using [multifeed](https://github.com/kappa-db/multifeed), and one for transferring files using a [custom made protocol](https://github.com/ameba23/metadb-core/tree/master/lib/file-transfer).
+These logs contain hashes and metadata of the files held by a peer, and [kappa-core](https://github.com/kappa-db/kappa-core) is used to aggregate all peers' logs into a single index. Requesting specific files, as well as actually transferring the files, is done a over hypercore protocol extensions using a simple [custom  protocol](https://github.com/ameba23/metadb-core/tree/master/lib/file-transfer).
 
-Since it is mostly based on the hyper stack, you might wonder why files are not transferred using [hyperdrive](https://github.com/hypercore-protocol/hyperdrive).  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk.  Harddrive-party is designed for sharing large media collections, and requiring people to either duplicate their collection or access them through a hyperdrive seems too restrictive. This might change though.
+Since it is mostly based on the hyper stack, you might wonder why files are not transferred using [hyperdrive](https://github.com/hypercore-protocol/hyperdrive).  As of hyperdrive 10, it is difficult to include files in a hyperdrive which are actually stored as normal files on disk ('files-as-files' representation).  Harddrive-party is designed for sharing large media collections, and one of the design goals is that it does not meddle with your media collection.  This means not requiring people to either duplicate their media or access it through a system like FUSE which only works when the service is running.
 
 ### This module
 
@@ -88,10 +88,20 @@ To clear all application data and start fresh:
 
 ### Roadmap
 
+#### Short term
+
 - Commenting and stars - write comments about particular files - back end implemented, front end partially implemented.
 - Wall messages - encrypted messages only viewable by people who know a swarm key - giving a 'message board' for each swarm. Partially implemented.
 - Fulltext search. Search function currently uses a substring search of filepaths only
+- Multi-source downloading.  Simultaneous download different parts of a file from different peers (like bittorrent). Partially implemented.
 - Private messages and invites - send encrypted messages to a particular peer or invite a particular peer to another swarm. Implemented at protocol level only.
+
+### Long term dreams
+
+- Rewrite in rust.  There are rust implementations of quite some of the dependencies, but still some bits missing.
+- Instead of using hypercore replication to exchange lists of metadata, use [Invertible Bloom Lookup Tables](https://arxiv.org/abs/1101.2245) to avoid duplicating entries. This would become beneficial if peer's indexes are large and many peers hold copies of the same file.
+
+---
 
 metadb is based on an older unfinished python project, [meta-database](https://github.com/ameba23/meta-database). 
 
