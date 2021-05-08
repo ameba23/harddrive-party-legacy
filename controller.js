@@ -29,11 +29,11 @@ module.exports = function (metadb, options) {
       .catch((err) => {
         return res.status(422).send(`Error when building user interface: ${err.message}`)
       })
-    res.type('html').send('<html><body>Rebuilt... <a href="http://localhost:2323">reload</a></body></html>')
-    // res.sendFile(uiFilePath)
+    res.redirect('/')
   })
 
   router.get('/favicon.svg', (req, res) => {
+    // TODO this doesnt work
     res.sendFile(path.join(path.resolve(__dirname), 'favicon.svg'))
   })
 
@@ -108,12 +108,21 @@ module.exports = function (metadb, options) {
   router.get('/downloads', (req, res) => { processIterator(metadb.client.getDownloads(), res) })
   // List uploaded files
   router.get('/uploads', (req, res) => { processIterator(metadb.server.getUploads(), res) })
+
   // Send a downloaded file to the browser
   router.get('/downloads/:hash', async (req, res) => {
     const file = await metadb.client.getDownloadedFileByHash(req.params.hash)
       .catch((err) => { return err })
     if (file instanceof Error) return res.status(422).json({ err: file.message })
     res.sendFile(file.filename)
+  })
+
+  // Send a shared file to the browser
+  router.get('/shares/:hash', async (req, res) => {
+    const file = await metadb.shares.sharedb.get(req.params.hash)
+      .catch((err) => { return err })
+    if (file instanceof Error) return res.status(422).json({ err: file.message })
+    res.sendFile(path.join(file.baseDir, file.filePath))
   })
 
   // publish a 'wall message'
@@ -188,6 +197,8 @@ async function build (uiFilePath, options) {
   const uiFile = fs.createWriteStream(uiFilePath)
   uiFile.on('error', (err) => { return Promise.reject(err) })
   const ui = buildUi(options)
-  // ui.on('end', () => { callback() })
   ui.pipe(uiFile)
+  await new Promise((resolve, reject) => {
+    ui.on('end', resolve).on('error', reject)
+  })
 }
