@@ -1,8 +1,9 @@
 # Example systemd service file - customise and put in /lib/systemd/system
 # then run systemctl daemon-reload
 [Unit]
-Description=Metadb peer to peer filesharing
-Documentation=https://github.com/ameba23/metadb
+Description=Harddrive-party - peer to peer filesharing
+Documentation=https://github.com/ameba23/harddrive-party
+
 # Start this service after network is up
 After=network.target
 
@@ -21,7 +22,7 @@ RestartSec=10
 # Output to syslog
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=metadb
+SyslogIdentifier=harddrive-party
 
 #User=<alternate user>
 #Group=<alternate group>
